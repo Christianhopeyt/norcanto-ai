@@ -1,0 +1,9 @@
+{
+  "name": "norcanto-ai-functions",
+  "version": "1.0.0",
+  "description": "Netlify serverless functions for Norcanto AI",
+  "private": true,
+  "dependencies": {
+    "@netlify/functions": "^2.4.0"
+  }
+}

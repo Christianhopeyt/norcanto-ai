@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - Norcanto AI by Norcanto</title>
+  <meta name="description" content="Create your free Norcanto AI account. Start your 14-day trial with full AI document intelligence features.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://quickdocs.norcanto.com/pages/signup.html">
+  <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/subscription.css">
+</head>
+<body>
+
+<!-- Minimal nav -->
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32"></div>
+      <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
+    </a>
+    <div class="nav-actions">
+      <span style="font-size:13px;color:var(--text-muted)">Already have an account?</span>
+      <a href="/pages/signin.html" class="btn btn-ghost nav-cta">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-card animate-fade-up">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="36" height="36"></div>
+      <div class="auth-logo-name">Norcanto AI</div>
+    </div>
+
+    <h1 class="auth-title">Create your account</h1>
+    <p class="auth-subtitle">Start analyzing documents with AI in seconds.</p>
+
+    <div class="auth-trial-banner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span><strong>14-day free trial included.</strong> Full premium features, no credit card required.</span>
+    </div>
+
+    <form id="signup-form" novalidate>
+      <div class="form-group" id="fg-name">
+        <label class="form-label" for="name">Full Name</label>
+        <input type="text" id="name" class="form-input" placeholder="Your name" autocomplete="name" required>
+        <div class="form-error" id="err-name"></div>
+      </div>
+
+      <div class="form-group" id="fg-email">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+        <div class="form-error" id="err-email"></div>
+      </div>
+
+      <div class="form-group" id="fg-password">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" class="form-input" placeholder="At least 8 characters" autocomplete="new-password" required>
+          <button type="button" class="input-toggle" id="pw-toggle" aria-label="Toggle password visibility">
+            <svg id="pw-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="password-strength" id="pw-strength" style="display:none">
+          <div class="strength-bar">
+            <div class="strength-segment"></div>
+            <div class="strength-segment"></div>
+            <div class="strength-segment"></div>
+            <div class="strength-segment"></div>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+        </div>
+        <div class="form-error" id="err-password"></div>
+      </div>
+
+      <div id="form-general-error" style="font-size:13px;color:var(--danger);margin-bottom:12px;padding:10px 12px;background:var(--tint-red);border:1px solid rgba(239,68,68,0.2);border-radius:8px;display:none;"></div>
+
+      <button type="submit" class="btn btn-primary btn-lg form-btn" id="signup-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Create Free Account
+      </button>
+
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px;line-height:1.5;">
+        By creating an account, you agree to our
+        <a href="/pages/terms.html" style="color:var(--text-secondary);">Terms of Service</a> and
+        <a href="/pages/privacy-policy.html" style="color:var(--text-secondary);">Privacy Policy</a>.
+      </p>
+    </form>
+
+    <p class="auth-footer">Already have an account? <a href="/pages/signin.html">Sign in</a></p>
+
+    <!-- What you get -->
+    <div style="margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--brand-border);">
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3);">Included in your trial</div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+          20 document analyses with full AI intelligence
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+          Risk detection, action items, and key dates
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+          Unlimited AI document chat for 14 days
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script>
+// Redirect if already logged in
+if (QDAuth.isLoggedIn()) {
+  const params = new URLSearchParams(window.location.search);
+  window.location.href = params.get('next') || '/pages/app.html';
+}
+
+// Password strength checker
+const pwInput = document.getElementById('password');
+const strengthEl = document.getElementById('pw-strength');
+const strengthLabel = document.getElementById('strength-label');
+const strengthLevels = ['Very weak', 'Weak', 'Good', 'Strong'];
+
+pwInput.addEventListener('input', () => {
+  const val = pwInput.value;
+  if (!val) { strengthEl.style.display = 'none'; return; }
+  strengthEl.style.display = 'block';
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+  if (/\d/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  strengthEl.className = `password-strength strength-${Math.min(score, 3)}`;
+  strengthLabel.textContent = strengthLevels[Math.min(score, 3)];
+});
+
+// Password toggle
+document.getElementById('pw-toggle').addEventListener('click', () => {
+  const isHidden = pwInput.type === 'password';
+  pwInput.type = isHidden ? 'text' : 'password';
+  document.getElementById('pw-eye').innerHTML = isHidden
+    ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+// Form validation
+const showFieldError = (fieldId, errId, msg) => {
+  document.getElementById(fieldId)?.classList.add('has-error');
+  const err = document.getElementById(errId);
+  if (err) { err.textContent = msg; err.style.display = 'block'; }
+};
+const clearErrors = () => {
+  document.querySelectorAll('.form-group').forEach(g => g.classList.remove('has-error'));
+  document.querySelectorAll('.form-error').forEach(e => { e.textContent = ''; e.style.display = 'none'; });
+  const gen = document.getElementById('form-general-error');
+  if (gen) gen.style.display = 'none';
+};
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearErrors();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  let valid = true;
+
+  if (!name || name.length < 2) { showFieldError('fg-name', 'err-name', 'Please enter your full name.'); valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFieldError('fg-email', 'err-email', 'Please enter a valid email address.'); valid = false; }
+  if (!password || password.length < 8) { showFieldError('fg-password', 'err-password', 'Password must be at least 8 characters.'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="btn-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="animation:spin 1s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg> Creating account...';
+
+  try {
+    await QDAuth.register(name, email, password);
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next') || '/pages/app.html';
+    const upgrade = params.get('upgrade');
+    window.location.href = upgrade ? `/pages/pricing.html?upgrade=${upgrade}` : next;
+  } catch (err) {
+    const genErr = document.getElementById('form-general-error');
+    if (genErr) { genErr.textContent = err.message; genErr.style.display = 'block'; }
+    btn.disabled = false;
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Free Account';
+  }
+});
+</script>
+</body>
+</html>

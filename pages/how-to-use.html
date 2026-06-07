@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How To Use - Norcanto AI by Norcanto</title>
+  <meta name="description" content="Learn how to use Norcanto AI to analyze documents, understand summaries, review risks, and chat with your documents using AI.">
+  <meta name="keywords" content="how to use Norcanto AI, AI document analysis guide, PDF analysis tutorial">
+  <link rel="canonical" href="https://norcanto.com/pages/how-to-use.html">
+  <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
+  <meta property="og:title" content="How To Use Norcanto AI">
+  <meta property="og:description" content="Step-by-step guide to analyzing documents with AI.">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/subscription.css">
+  <style>
+    .guide-section { padding: var(--space-24) 0; }
+    .guide-section + .guide-section { border-top: 1px solid var(--brand-border); }
+    .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16); align-items: center; }
+    .guide-grid.reverse { direction: rtl; }
+    .guide-grid.reverse > * { direction: ltr; }
+    .guide-step-num { font-family: var(--font-display); font-size: 80px; font-weight: 800; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.04em; margin-bottom: var(--space-3); }
+    .guide-title { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; margin-bottom: var(--space-4); }
+    .guide-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.75; margin-bottom: var(--space-5); }
+    .guide-tips { display: flex; flex-direction: column; gap: var(--space-3); }
+    .guide-tip { display: flex; align-items: flex-start; gap: var(--space-3); font-size: 14px; color: var(--text-secondary); }
+    .guide-tip svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--success); }
+    .guide-visual { background: var(--brand-charcoal); border: 1px solid var(--brand-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
+    .guide-visual-bar { padding: 12px 16px; background: var(--brand-dark); border-bottom: 1px solid var(--brand-border); display: flex; align-items: center; gap: var(--space-2); }
+    .guide-visual-body { padding: var(--space-5); }
+    @media (max-width: 768px) {
+      .guide-grid, .guide-grid.reverse { grid-template-columns: 1fr; direction: ltr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32"></div>
+      <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/" class="nav-link">Home</a></li>
+      <li><a href="/pages/how-to-use.html" class="nav-link active">How It Works</a></li>
+      <li><a href="/pages/pricing.html" class="nav-link">Pricing</a></li>
+    </ul>
+    <div class="nav-divider"></div>
+    <div class="nav-actions">
+      <a href="/pages/signin.html" class="btn btn-ghost nav-cta" data-nav-signin>Sign in</a>
+      <a href="/pages/signup.html" class="btn btn-primary nav-cta" data-nav-getstarted>Get Started</a>
+      <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="menu-icon" width="18" height="18"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-mobile" id="mobile-nav">
+  <a href="/" class="nav-mobile-link">Home</a>
+  <a href="/pages/how-to-use.html" class="nav-mobile-link">How It Works</a>
+  <a href="/pages/pricing.html" class="nav-mobile-link">Pricing</a>
+  <div class="nav-mobile-divider"></div>
+  <div class="nav-mobile-actions">
+    <a href="/pages/signin.html" class="btn btn-secondary" style="justify-content:center">Sign in</a>
+    <a href="/pages/signup.html" class="btn btn-primary" style="justify-content:center">Get Started Free</a>
+  </div>
+</div>
+
+<main style="padding-top:var(--nav-height)">
+  <!-- Hero -->
+  <section style="padding:var(--space-20) 0 var(--space-16);text-align:center;border-bottom:1px solid var(--brand-border)">
+    <div class="container">
+      <span class="section-label">Documentation</span>
+      <h1 class="section-title" style="margin-top:var(--space-3)">How To Use Norcanto AI</h1>
+      <p class="section-desc">From upload to actionable insights in under 60 seconds. Here is everything you need to know.</p>
+      <div style="display:flex;justify-content:center;gap:var(--space-3);margin-top:var(--space-8);flex-wrap:wrap">
+        <a href="#upload" class="btn btn-secondary">Uploading documents</a>
+        <a href="#summaries" class="btn btn-secondary">Understanding summaries</a>
+        <a href="#risks" class="btn btn-secondary">Reviewing risks</a>
+        <a href="#chat" class="btn btn-secondary">AI chat</a>
+        <a href="#export" class="btn btn-secondary">Exporting</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1: Upload -->
+  <section class="guide-section" id="upload">
+    <div class="container">
+      <div class="guide-grid" data-animate>
+        <div>
+          <div class="guide-step-num">01</div>
+          <h2 class="guide-title">Uploading Your Document</h2>
+          <p class="guide-desc">Getting started is simple. Norcanto AI accepts PDF, DOCX, and TXT files up to 20MB. You can drag and drop your file directly onto the upload area or click to browse your device.</p>
+          <div class="guide-tips">
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Supported formats: PDF, DOCX, and TXT files
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Maximum file size is 20MB per document
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Text-based PDFs produce the best analysis results
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Your documents are processed securely and never shared
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="guide-visual">
+            <div class="guide-visual-bar">
+              <div class="preview-dot preview-dot-red"></div>
+              <div class="preview-dot preview-dot-yellow"></div>
+              <div class="preview-dot preview-dot-green"></div>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:auto">Analyze Document</span>
+            </div>
+            <div class="guide-visual-body">
+              <div style="border:2px dashed var(--brand-border);border-radius:var(--radius-lg);padding:var(--space-10);text-align:center;background:var(--brand-elevated)">
+                <div style="width:48px;height:48px;background:var(--brand-surface);border:1px solid var(--brand-border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div style="font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:var(--space-2)">Drop your document here</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:var(--space-4)">or click to browse files</div>
+                <div style="display:flex;gap:var(--space-2);justify-content:center">
+                  <span class="format-pill">PDF</span>
+                  <span class="format-pill">DOCX</span>
+                  <span class="format-pill">TXT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 2: Summaries -->
+  <section class="guide-section" id="summaries">
+    <div class="container">
+      <div class="guide-grid reverse" data-animate>
+        <div>
+          <div class="guide-step-num">02</div>
+          <h2 class="guide-title">Understanding Your Summary</h2>
+          <p class="guide-desc">Once analysis is complete, Norcanto AI delivers a structured intelligence report. The Executive Summary gives you a concise overview, while the Plain Language Explanation translates complex jargon into clear, simple terms.</p>
+          <div class="guide-tips">
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Executive Summary covers the most important points
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Plain Language section removes technical complexity
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Key Insights highlight the most critical findings
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Important Dates shows all deadlines and milestones
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="guide-visual">
+            <div class="guide-visual-bar">
+              <div class="preview-dot preview-dot-red"></div><div class="preview-dot preview-dot-yellow"></div><div class="preview-dot preview-dot-green"></div>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:auto">Analysis Results</span>
+            </div>
+            <div class="guide-visual-body" style="display:flex;flex-direction:column;gap:var(--space-3)">
+              <div style="background:var(--brand-elevated);border:1px solid var(--brand-border);border-radius:var(--radius);padding:var(--space-4)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-2)">Executive Summary</div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">This service agreement establishes a 12-month engagement between the parties with automatic renewal provisions and specific termination requirements...</div>
+              </div>
+              <div style="background:var(--brand-elevated);border:1px solid var(--brand-border);border-radius:var(--radius);padding:var(--space-4)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-2)">Plain Language</div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">In simple terms: you are signing up for a one-year service. It will renew automatically unless you cancel 30 days before the end date...</div>
+              </div>
+              <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+                <span class="pill pill-info">Contract</span>
+                <span class="pill">12 months</span>
+                <span class="pill pill-warning">Auto-renew</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Risks -->
+  <section class="guide-section" id="risks">
+    <div class="container">
+      <div class="guide-grid" data-animate>
+        <div>
+          <div class="guide-step-num">03</div>
+          <h2 class="guide-title">Reviewing Risks and Obligations</h2>
+          <p class="guide-desc">Norcanto AI automatically identifies potential risks, assigns severity levels, and suggests mitigation actions. Obligations are separately listed so you know exactly what you or the other party must do.</p>
+          <div class="guide-tips">
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Risks rated High, Medium, or Low by severity
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Each risk includes a suggested mitigation action
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Obligations list what each party must do
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Risk detection requires Premium or Trial plan
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="guide-visual">
+            <div class="guide-visual-bar">
+              <div class="preview-dot preview-dot-red"></div><div class="preview-dot preview-dot-yellow"></div><div class="preview-dot preview-dot-green"></div>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:auto">Risks Detected</span>
+            </div>
+            <div class="guide-visual-body" style="display:flex;flex-direction:column;gap:var(--space-3)">
+              <div style="background:var(--tint-red);border:1px solid rgba(239,68,68,0.2);border-left:3px solid var(--danger);border-radius:var(--radius);padding:var(--space-3) var(--space-4)">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#F87171;margin-bottom:4px">HIGH RISK</div>
+                <div style="font-size:13px;color:var(--text-secondary)">Unlimited liability clause in Section 8.2 has no cap on damages.</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Suggestion: Negotiate a liability cap before signing.</div>
+              </div>
+              <div style="background:var(--tint-amber);border:1px solid rgba(245,158,11,0.2);border-left:3px solid var(--warning);border-radius:var(--radius);padding:var(--space-3) var(--space-4)">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#FCD34D;margin-bottom:4px">MEDIUM RISK</div>
+                <div style="font-size:13px;color:var(--text-secondary)">Automatic renewal with only 30-day opt-out window.</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Suggestion: Calendar the opt-out deadline immediately.</div>
+              </div>
+              <div style="background:var(--tint-green);border:1px solid rgba(34,197,94,0.2);border-left:3px solid var(--success);border-radius:var(--radius);padding:var(--space-3) var(--space-4)">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#4ADE80;margin-bottom:4px">LOW RISK</div>
+                <div style="font-size:13px;color:var(--text-secondary)">Late payment fees are standard at 1.5% per month.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: Chat -->
+  <section class="guide-section" id="chat">
+    <div class="container">
+      <div class="guide-grid reverse" data-animate>
+        <div>
+          <div class="guide-step-num">04</div>
+          <h2 class="guide-title">Using AI Document Chat</h2>
+          <p class="guide-desc">The AI chat panel lets you ask any question about your document and receive precise answers that reference specific sections. Use the suggested questions to get started, or ask anything you need to know.</p>
+          <div class="guide-tips">
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Suggested questions appear automatically based on document type
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Answers reference the source section when available
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Press Enter to send, Shift+Enter for a new line
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Chat message limits depend on your plan
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="guide-visual">
+            <div class="guide-visual-bar">
+              <div style="width:24px;height:24px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--brand-black)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:var(--space-2)">Ask the Document</span>
+            </div>
+            <div class="guide-visual-body" style="display:flex;flex-direction:column;gap:var(--space-3)">
+              <div style="align-self:flex-end;background:var(--accent);color:var(--brand-black);padding:10px 14px;border-radius:12px 4px 12px 12px;font-size:12px;max-width:85%">What are the payment terms?</div>
+              <div style="background:var(--brand-elevated);border:1px solid var(--brand-border);padding:10px 14px;border-radius:4px 12px 12px 12px;font-size:12px;color:var(--text-secondary);max-width:90%">
+                Per Section 4.1, payment is due Net-30 from invoice date. Late fees of 1.5% per month apply after the grace period.
+                <div style="font-size:10px;color:var(--text-muted);margin-top:5px;display:flex;align-items:center;gap:4px">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                  Source: Section 4.1
+                </div>
+              </div>
+              <div style="background:var(--brand-surface);border:1px solid var(--brand-border);border-radius:var(--radius);padding:8px 12px;display:flex;gap:var(--space-2);align-items:center">
+                <input type="text" placeholder="Ask anything about this document..." style="background:transparent;border:none;outline:none;font-size:12px;color:var(--text-muted);flex:1;font-family:var(--font-body)" disabled>
+                <div style="width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--brand-black)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 5: Export -->
+  <section class="guide-section" id="export">
+    <div class="container">
+      <div class="guide-grid" data-animate>
+        <div>
+          <div class="guide-step-num">05</div>
+          <h2 class="guide-title">Exporting Your Analysis</h2>
+          <p class="guide-desc">Premium and Pro plan users can export the full analysis report as a text file. The export includes the executive summary, all insights, risks, obligations, and action items in a clean, readable format.</p>
+          <div class="guide-tips">
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Export available on Premium and Pro plans
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Click the Export button in the analysis view top bar
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              The report downloads as a structured text file
+            </div>
+            <div class="guide-tip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Useful for sharing with colleagues or legal teams
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="guide-visual">
+            <div class="guide-visual-bar">
+              <div class="preview-dot preview-dot-red"></div><div class="preview-dot preview-dot-yellow"></div><div class="preview-dot preview-dot-green"></div>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:auto">Analysis Report</span>
+            </div>
+            <div class="guide-visual-body">
+              <div style="background:var(--brand-elevated);border:1px solid var(--brand-border);border-radius:var(--radius);padding:var(--space-4);font-family:monospace;font-size:11px;color:var(--text-muted);line-height:1.7">
+                <div style="color:var(--text-primary);font-weight:700;margin-bottom:var(--space-2)">NORCANTO AI - DOCUMENT ANALYSIS</div>
+                <div>Document: Service_Agreement.pdf</div>
+                <div>Analyzed: January 15, 2025</div>
+                <div style="margin-top:var(--space-2)">--- EXECUTIVE SUMMARY ---</div>
+                <div>This service agreement establishes a 12-month...</div>
+                <div style="margin-top:var(--space-2)">--- RISKS DETECTED ---</div>
+                <div>[HIGH] Unlimited liability clause...</div>
+                <div>[MEDIUM] Auto-renewal provision...</div>
+                <div style="margin-top:var(--space-2)">--- ACTION ITEMS ---</div>
+                <div>[HIGH] Review Section 8.2 with legal...</div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;margin-top:var(--space-3)">
+                <div class="btn btn-primary btn-sm" style="pointer-events:none">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export Report
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding:var(--space-24) 0">
+    <div class="container">
+      <div class="cta-inner" style="position:relative;text-align:center;background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-xl);padding:var(--space-16);overflow:hidden">
+        <div class="cta-glow"></div>
+        <span class="section-label" style="position:relative">Get Started</span>
+        <h2 class="cta-title" style="position:relative;margin-top:var(--space-3)">Ready to analyze your first document?</h2>
+        <p class="cta-desc" style="position:relative">Start your 14-day free trial. No credit card required.</p>
+        <div style="display:flex;justify-content:center;gap:var(--space-3);position:relative;flex-wrap:wrap">
+          <a href="/pages/signup.html" class="btn btn-primary btn-lg">Create Free Account</a>
+          <a href="/pages/pricing.html" class="btn btn-ghost btn-lg">View Pricing</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <div class="footer-copy">2024 Norcanto. All rights reserved.</div>
+      <div class="footer-legal">
+        <a href="/pages/privacy-policy.html">Privacy</a>
+        <a href="/pages/terms.html">Terms</a>
+        <a href="/pages/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

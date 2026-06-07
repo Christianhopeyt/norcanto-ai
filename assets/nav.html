@@ -1,0 +1,120 @@
+<!-- NAVIGATION COMPONENT - included in all pages -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="/" class="nav-logo" aria-label="QuickDocs by Norcanto">
+      <div class="nav-logo-icon">
+        <img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32" loading="lazy">
+      </div>
+      <div>
+        <div class="nav-logo-wordmark">
+          QuickDocs
+          <span class="nav-logo-sub">by Norcanto</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="nav-links" role="list">
+      <li class="nav-item">
+        <button class="nav-link" aria-expanded="false" aria-haspopup="true">
+          Product
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown" role="menu">
+          <a href="/pages/app.html" class="dropdown-item" role="menuitem">
+            <div class="dropdown-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div>
+              <div class="dropdown-label">Document Analysis</div>
+              <div class="dropdown-desc">AI-powered insights from any doc</div>
+            </div>
+          </a>
+          <a href="/pages/app.html" class="dropdown-item" role="menuitem">
+            <div class="dropdown-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <div class="dropdown-label">AI Document Chat</div>
+              <div class="dropdown-desc">Ask questions, get sourced answers</div>
+            </div>
+          </a>
+          <a href="/pages/how-to-use.html" class="dropdown-item" role="menuitem">
+            <div class="dropdown-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="dropdown-label">How To Use</div>
+              <div class="dropdown-desc">Get started in minutes</div>
+            </div>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" aria-expanded="false" aria-haspopup="true">
+          Resources
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown" role="menu">
+          <a href="/pages/about.html" class="dropdown-item" role="menuitem">
+            <div class="dropdown-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="dropdown-label">About Norcanto</div>
+              <div class="dropdown-desc">Our mission and team</div>
+            </div>
+          </a>
+          <a href="/pages/contact.html" class="dropdown-item" role="menuitem">
+            <div class="dropdown-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="dropdown-label">Contact</div>
+              <div class="dropdown-desc">hello@norcanto.com</div>
+            </div>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a href="/#pricing" class="nav-link">Pricing</a>
+      </li>
+    </ul>
+
+    <!-- Divider + Actions -->
+    <div class="nav-divider"></div>
+    <div class="nav-actions">
+      <a href="/pages/app.html" class="btn btn-ghost nav-cta">Sign in</a>
+      <a href="/pages/app.html" class="btn btn-primary nav-cta">Get Started</a>
+      <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="menu-icon"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="nav-mobile" id="mobile-nav" role="dialog" aria-label="Mobile navigation">
+  <a href="/pages/app.html" class="nav-mobile-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Document Analysis
+  </a>
+  <a href="/pages/app.html" class="nav-mobile-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    AI Document Chat
+  </a>
+  <a href="/pages/how-to-use.html" class="nav-mobile-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    How To Use
+  </a>
+  <div class="nav-mobile-divider"></div>
+  <a href="/pages/about.html" class="nav-mobile-link">About</a>
+  <a href="/pages/contact.html" class="nav-mobile-link">Contact</a>
+  <a href="/#pricing" class="nav-mobile-link">Pricing</a>
+  <div class="nav-mobile-divider"></div>
+  <div class="nav-mobile-actions">
+    <a href="/pages/app.html" class="btn btn-secondary" style="justify-content:center">Sign in</a>
+    <a href="/pages/app.html" class="btn btn-primary" style="justify-content:center">Get Started Free</a>
+  </div>
+</div>

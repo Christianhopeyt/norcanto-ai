@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Norcanto AI by Norcanto</title>
+  <meta name="description" content="Sign in to your Norcanto AI account and continue analyzing documents with AI.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://norcanto.com/pages/signin.html">
+  <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/subscription.css">
+</head>
+<body>
+
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32"></div>
+      <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
+    </a>
+    <div class="nav-actions">
+      <span style="font-size:13px;color:var(--text-muted)">New here?</span>
+      <a href="/pages/signup.html" class="btn btn-primary nav-cta">Create Account</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-card animate-fade-up">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="36" height="36"></div>
+      <div class="auth-logo-name">Norcanto AI</div>
+    </div>
+
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-subtitle">Sign in to your account to continue.</p>
+
+    <form id="signin-form" novalidate>
+      <div class="form-group" id="fg-email">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+        <div class="form-error" id="err-email"></div>
+      </div>
+
+      <div class="form-group" id="fg-password">
+        <label class="form-label" for="password">
+          Password
+          <a href="/pages/forgot-password.html" style="float:right;font-size:12px;color:var(--text-muted);font-weight:400;text-decoration:underline;text-underline-offset:3px;">Forgot password?</a>
+        </label>
+        <div class="input-wrapper">
+          <input type="password" id="password" class="form-input" placeholder="Your password" autocomplete="current-password" required>
+          <button type="button" class="input-toggle" id="pw-toggle" aria-label="Toggle password visibility">
+            <svg id="pw-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="form-error" id="err-password"></div>
+      </div>
+
+      <div id="form-general-error" style="font-size:13px;color:var(--danger);margin-bottom:12px;padding:10px 12px;background:var(--tint-red);border:1px solid rgba(239,68,68,0.2);border-radius:8px;display:none;"></div>
+
+      <button type="submit" class="btn btn-primary btn-lg form-btn" id="signin-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </button>
+    </form>
+
+    <p class="auth-footer">No account yet? <a href="/pages/signup.html">Create one free</a></p>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script>
+if (QDAuth.isLoggedIn()) {
+  const p = new URLSearchParams(window.location.search);
+  window.location.href = p.get('next') || '/pages/app.html';
+}
+
+document.getElementById('pw-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('password');
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  document.getElementById('pw-eye').innerHTML = isHidden
+    ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+document.getElementById('signin-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  document.querySelectorAll('.form-group').forEach(g => g.classList.remove('has-error'));
+  document.getElementById('form-general-error').style.display = 'none';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  let valid = true;
+
+  if (!email) { document.getElementById('fg-email').classList.add('has-error'); document.getElementById('err-email').textContent = 'Email is required.'; valid = false; }
+  if (!password) { document.getElementById('fg-password').classList.add('has-error'); document.getElementById('err-password').textContent = 'Password is required.'; valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('signin-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="animation:spin 1s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg> Signing in...';
+
+  try {
+    await QDAuth.login(email, password);
+    const p = new URLSearchParams(window.location.search);
+    const upgrade = p.get('upgrade');
+    window.location.href = upgrade ? `/pages/pricing.html?upgrade=${upgrade}` : (p.get('next') || '/pages/app.html');
+  } catch (err) {
+    const el = document.getElementById('form-general-error');
+    el.textContent = err.message; el.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Sign In';
+  }
+});
+</script>
+</body>
+</html>

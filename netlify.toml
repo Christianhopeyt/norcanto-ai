@@ -1,0 +1,78 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"
+
+[dev]
+  framework = "#static"
+  targetPort = 8888
+  port = 8888
+  autoLaunch = false
+
+[[redirects]]
+  from = "/api/payments/camerpay/create"
+  to = "/.netlify/functions/camerpay-create"
+  status = 200
+
+[[redirects]]
+  from = "/api/payments/camerpay/callback"
+  to = "/.netlify/functions/camerpay-callback"
+  status = 200
+
+[[redirects]]
+  from = "/api/payments/camerpay/webhook"
+  to = "/.netlify/functions/camerpay-webhook"
+  status = 200
+
+[[redirects]]
+  from = "/api/payments/camerpay/verify"
+  to = "/.netlify/functions/camerpay-verify"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/register"
+  to = "/.netlify/functions/auth-register"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/login"
+  to = "/.netlify/functions/auth-login"
+  status = 200
+
+[[redirects]]
+  from = "/api/user/status"
+  to = "/.netlify/functions/user-status"
+  status = 200
+
+[[redirects]]
+  from = "/api/usage/track"
+  to = "/.netlify/functions/usage-track"
+  status = 200
+
+[[redirects]]
+  from = "/api/analyze"
+  to = "/.netlify/functions/analyze"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/*"
+  to = "/.netlify/functions/admin"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Norcanto AI</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/subscription.css">
+</head>
+<body>
+
+<nav class="nav scrolled" id="main-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32"></div>
+      <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
+    </a>
+  </div>
+</nav>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:calc(var(--nav-height) + var(--space-8)) var(--space-4) var(--space-16)">
+  <div class="auth-card animate-fade-up" style="text-align:center;max-width:480px">
+
+    <!-- Success icon -->
+    <div style="width:72px;height:72px;border-radius:50%;background:var(--tint-green);border:2px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-6)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <h1 style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-3)">Payment Confirmed</h1>
+    <p style="font-size:15px;color:var(--text-secondary);line-height:1.65;margin-bottom:var(--space-6)" id="success-message">
+      Your subscription has been activated. Welcome to Norcanto AI!
+    </p>
+
+    <div id="plan-details" style="background:var(--brand-elevated);border:1px solid var(--brand-border);border-radius:var(--radius);padding:var(--space-4);margin-bottom:var(--space-6);text-align:left">
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3)">Your Plan</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:16px;font-weight:600;color:var(--text-primary)" id="plan-name">Premium</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:2px" id="plan-ref"></div>
+        </div>
+        <span class="sub-status-pill active">Active</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <a href="/pages/app.html" class="btn btn-primary btn-lg" style="justify-content:center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Go to Dashboard
+      </a>
+      <a href="/pages/app.html" class="btn btn-ghost" style="justify-content:center" data-open-upload>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Analyze a Document Now
+      </a>
+    </div>
+
+    <div style="margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--brand-border)">
+      <div style="font-size:13px;color:var(--text-muted)">A confirmation has been sent to your email address.</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:var(--space-2)">Questions? <a href="/pages/contact.html" style="color:var(--text-secondary)">Contact us</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  const plan = params.get('plan');
+
+  const planNames = { premium: 'Premium', pro: 'Pro' };
+  if (plan && planNames[plan]) {
+    document.getElementById('plan-name').textContent = `Norcanto AI ${planNames[plan]}`;
+    document.getElementById('success-message').textContent = `Your ${planNames[plan]} subscription is now active. You have full access to all ${planNames[plan]} features.`;
+  }
+  if (ref) {
+    document.getElementById('plan-ref').textContent = `Reference: ${ref}`;
+  }
+
+  // Refresh subscription status from server
+  if (QDAuth.isLoggedIn()) {
+    QDAuth.refreshStatus();
+  }
+});
+</script>
+</body>
+</html>

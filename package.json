@@ -1,0 +1,16 @@
+{
+  "name": "norcanto-ai",
+  "version": "1.0.0",
+  "description": "Norcanto AI - AI Document Intelligence Platform",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
