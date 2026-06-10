@@ -130,8 +130,9 @@ const initUploadModal = () => {
 };
 
 const handleLandingUpload = (file) => {
-  // Landing page just redirects to app with a prompt to upload there
-  window.location.href = '/pages/app.html';
+  // File objects cannot be carried safely across a page navigation. Open the
+  // dashboard upload workflow immediately so the user can select it there.
+  window.location.href = '/pages/app.html?upload=1';
 };
 
 // ── Toast ────────────────────────────────────────────────────────────────────

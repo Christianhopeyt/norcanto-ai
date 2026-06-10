@@ -483,6 +483,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderDropzone();
   renderDocs();
+
+  if (new URLSearchParams(window.location.search).get('upload') === '1') {
+    openModal();
+    history.replaceState({}, '', window.location.pathname);
+  }
 });
 </script>
 </body>

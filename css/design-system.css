@@ -56,7 +56,8 @@
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body { font-family: var(--font-body); background: var(--brand-black); color: var(--text-primary); font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+body { font-family: var(--font-body); background: var(--brand-black); color: var(--text-primary); font-size: 15px; line-height: 1.6; overflow-x: hidden; overflow-wrap: anywhere; }
+#cookie-banner { z-index: 1500 !important; }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 button { cursor: pointer; border: none; background: none; font: inherit; }
@@ -73,6 +74,13 @@ input, textarea, select { font: inherit; }
 .container { width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 var(--space-6); }
 @media (max-width: 480px) { .container { padding: 0 var(--space-4); } }
 
+.responsive-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16); align-items: start; }
+.responsive-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+@media (max-width: 768px) {
+  .responsive-grid-2 { grid-template-columns: 1fr; gap: var(--space-8); }
+  .responsive-grid-3 { grid-template-columns: 1fr; }
+}
+
 /* ── Buttons ────────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
@@ -81,6 +89,7 @@ input, textarea, select { font: inherit; }
   transition: all var(--transition); cursor: pointer; border: none;
   white-space: nowrap; position: relative; overflow: hidden; text-decoration: none;
 }
+@media (max-width: 360px) { .btn { white-space: normal; text-align: center; } }
 .btn-primary { background: var(--accent); color: var(--text-inverse); box-shadow: 0 2px 12px rgba(245,245,240,0.15); }
 .btn-primary:hover { background: var(--highlight); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,245,240,0.25); }
 .btn-secondary { background: var(--brand-elevated); color: var(--text-primary); border: 1px solid var(--brand-border); }
@@ -138,6 +147,32 @@ input, textarea, select { font: inherit; }
 .input-toggle svg { width: 16px; height: 16px; }
 
 /* ── Auth card ──────────────────────────────────────────────────────────────── */
+/* Shared upload modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: var(--space-4); opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal { background: var(--brand-charcoal); border: 1px solid var(--brand-border); border-radius: var(--radius-xl); padding: var(--space-7); max-width: 480px; width: 100%; transform: scale(0.95) translateY(10px); transition: transform var(--transition); box-shadow: var(--shadow-lg); max-height: calc(100vh - 48px); overflow-y: auto; }
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-5); }
+.modal-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.modal-close { width: 30px; height: 30px; border-radius: var(--radius); background: var(--brand-elevated); border: 1px solid var(--brand-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all var(--transition-fast); flex-shrink: 0; }
+.modal-close:hover { background: var(--brand-surface); color: var(--text-primary); }
+.modal-close svg { width: 14px; height: 14px; }
+.dropzone { border: 2px dashed var(--brand-border); border-radius: var(--radius-lg); padding: var(--space-10) var(--space-6); text-align: center; cursor: pointer; transition: all var(--transition); background: var(--brand-elevated); }
+.dropzone:hover, .dropzone.drag-over { border-color: rgba(245,245,240,0.3); background: var(--accent-ghost); }
+.dropzone-icon { width: 44px; height: 44px; border-radius: var(--radius); background: var(--brand-surface); border: 1px solid var(--brand-border); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); color: var(--text-muted); }
+.dropzone-icon svg { width: 20px; height: 20px; }
+.dropzone-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: var(--space-2); }
+.dropzone-desc { font-size: 13px; color: var(--text-muted); }
+.dropzone-formats { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-4); }
+.format-pill { padding: 3px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: var(--brand-surface); border: 1px solid var(--brand-border); color: var(--text-muted); }
+.progress-bar-wrap { height: 4px; background: var(--brand-elevated); border-radius: 2px; overflow: hidden; }
+.progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s ease; }
+@media (max-width: 480px) {
+  .modal-overlay { align-items: flex-end; padding: var(--space-2); }
+  .modal { padding: var(--space-5); border-radius: var(--radius-lg); max-height: calc(100dvh - var(--space-4)); }
+  .dropzone { padding: var(--space-8) var(--space-4); }
+}
+
 .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: calc(var(--nav-height) + var(--space-8)) var(--space-4) var(--space-16); position: relative; }
 .auth-card { background: var(--brand-charcoal); border: 1px solid var(--brand-border); border-radius: var(--radius-xl); padding: var(--space-8); width: 100%; max-width: 440px; position: relative; z-index: 1; box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
 @media (max-width: 480px) { .auth-card { padding: var(--space-6); border-radius: var(--radius-lg); } }

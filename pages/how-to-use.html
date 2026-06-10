@@ -28,8 +28,16 @@
     .guide-visual { background: var(--brand-charcoal); border: 1px solid var(--brand-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
     .guide-visual-bar { padding: 12px 16px; background: var(--brand-dark); border-bottom: 1px solid var(--brand-border); display: flex; align-items: center; gap: var(--space-2); }
     .guide-visual-body { padding: var(--space-5); }
+    .guide-cta-section { padding: var(--space-24) 0; }
     @media (max-width: 768px) {
       .guide-grid, .guide-grid.reverse { grid-template-columns: 1fr; direction: ltr; }
+    }
+    @media (max-width: 480px) {
+      .guide-section, .guide-cta-section { padding: var(--space-16) 0; }
+      .guide-step-num { font-size: 56px; }
+      .guide-title { font-size: 24px; }
+      .guide-visual-body { padding: var(--space-4); }
+      .guide-cta-inner { padding: var(--space-10) var(--space-5) !important; border-radius: var(--radius-lg) !important; }
     }
   </style>
 </head>
@@ -365,9 +373,9 @@
   </section>
 
   <!-- CTA -->
-  <section style="padding:var(--space-24) 0">
+  <section class="guide-cta-section">
     <div class="container">
-      <div class="cta-inner" style="position:relative;text-align:center;background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-xl);padding:var(--space-16);overflow:hidden">
+      <div class="cta-inner guide-cta-inner" style="position:relative;text-align:center;background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-xl);padding:var(--space-16);overflow:hidden">
         <div class="cta-glow"></div>
         <span class="section-label" style="position:relative">Get Started</span>
         <h2 class="cta-title" style="position:relative;margin-top:var(--space-3)">Ready to analyze your first document?</h2>

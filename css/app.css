@@ -68,6 +68,18 @@
 .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
 
 /* Analysis layout */
+/* Admin */
+.admin-layout { min-height: 100vh; }
+.admin-sidebar { position: fixed; top: var(--nav-height); left: 0; bottom: 0; width: 220px; padding: var(--space-6) var(--space-4); background: var(--brand-charcoal); border-right: 1px solid var(--brand-border); overflow-y: auto; }
+.admin-nav-item { display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: 9px var(--space-3); border-radius: var(--radius); color: var(--text-secondary); text-align: left; transition: all var(--transition-fast); }
+.admin-nav-item + .admin-nav-item { margin-top: var(--space-1); }
+.admin-nav-item:hover, .admin-nav-item.active { color: var(--text-primary); background: var(--accent-ghost); }
+.admin-nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.admin-main { margin-left: 220px; padding: var(--space-8); }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--brand-border); font-size: 12px; color: var(--text-secondary); text-align: left; vertical-align: top; }
+.data-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+
 .analysis-layout { display: grid; grid-template-columns: 1fr 400px; height: calc(100vh - var(--nav-height)); }
 @media (max-width: 1024px) { .analysis-layout { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } }
 .analysis-main { overflow-y: auto; padding: var(--space-6); border-right: 1px solid var(--brand-border); }
@@ -130,7 +142,20 @@
   .sidebar-overlay.show { display: block; }
   .main-content { margin-left: 0; }
   .topbar { padding: var(--space-3) var(--space-4); }
+  .admin-layout { display: block; }
+  .admin-sidebar { position: static; width: auto; min-height: auto; padding: calc(var(--nav-height) + var(--space-3)) var(--space-4) var(--space-3); border-right: none; border-bottom: 1px solid var(--brand-border); overflow-x: auto; }
+  .admin-sidebar nav { display: flex; gap: var(--space-2); min-width: max-content; }
+  .admin-main { margin-left: 0; padding: var(--space-5) var(--space-4) !important; }
 }
 @media (max-width: 480px) {
   .topbar-title { font-size: 16px; }
+  .topbar { gap: var(--space-2); }
+  .topbar-right { gap: var(--space-2); }
+  .topbar-right .btn { padding-inline: 10px; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .analysis-layout { height: auto; min-height: calc(100dvh - var(--nav-height)); }
+  .analysis-sidebar { height: min(420px, 60dvh); }
+  .analysis-doc-name { overflow-wrap: anywhere; }
+  .chat-bubble { max-width: calc(100% - 34px); }
+  .data-table { min-width: 560px; }
 }
