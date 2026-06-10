@@ -10,7 +10,6 @@
   <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/nav.css">
-  <link rel="stylesheet" href="/css/subscription.css">
 </head>
 <body>
 
@@ -108,7 +107,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     await QDAuth.login(email, password);
     const p = new URLSearchParams(window.location.search);
     const upgrade = p.get('upgrade');
-    window.location.href = upgrade ? `/pages/pricing.html?upgrade=${upgrade}` : (p.get('next') || '/pages/app.html');
+    window.location.href = p.get('next') || '/pages/app.html';
   } catch (err) {
     const el = document.getElementById('form-general-error');
     el.textContent = err.message; el.style.display = 'block';

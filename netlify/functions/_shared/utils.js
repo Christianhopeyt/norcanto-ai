@@ -1,10 +1,10 @@
 // netlify/functions/_shared/utils.js
-// Shared utilities across all serverless functions
-// Uses Node.js built-in modules only — no external dependencies needed
+// Shared utilities - Norcanto AI (Free platform, no subscriptions)
+'use strict';
 
 const crypto = require('node:crypto');
 
-// ─── CORS Headers ──────────────────────────────────────────────────────────────
+// ─── CORS ─────────────────────────────────────────────────────────────────────
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
@@ -12,22 +12,17 @@ const corsHeaders = {
   'Content-Type': 'application/json',
 };
 
-const respond = (statusCode, body, extraHeaders = {}) => ({
-  statusCode,
-  headers: { ...corsHeaders, ...extraHeaders },
-  body: JSON.stringify(body),
-});
+const respond    = (code, body, extra = {}) => ({ statusCode: code, headers: { ...corsHeaders, ...extra }, body: JSON.stringify(body) });
+const respondOK  = (data)    => respond(200, { success: true,  ...data });
+const respondErr = (msg, c=400) => respond(c,  { success: false, error: msg });
+const respondOptions = ()    => respond(200, {});
 
-const respondOK = (data) => respond(200, { success: true, ...data });
-const respondError = (msg, code = 400) => respond(code, { success: false, error: msg });
-const respondOptions = () => respond(200, {});
-
-// ─── Supabase Client (lightweight fetch-based) ────────────────────────────────
+// ─── Supabase (fetch-based, no SDK needed) ─────────────────────────────────────
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
 const supabase = {
-  async query(path, method = 'GET', body = null) {
+  async _req(path, method = 'GET', body = null) {
     if (!supabaseUrl || !supabaseKey) throw new Error('Supabase not configured');
     const res = await fetch(`${supabaseUrl}/rest/v1${path}`, {
       method,
@@ -35,232 +30,69 @@ const supabase = {
         apikey: supabaseKey,
         Authorization: `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
-        Prefer: method === 'POST' ? 'return=representation' : 'return=representation',
+        Prefer: 'return=representation',
       },
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
     const text = await res.text();
-    if (!res.ok) throw new Error(`Supabase error ${res.status}: ${text}`);
+    if (!res.ok) throw new Error(`Supabase ${res.status}: ${text}`);
     return text ? JSON.parse(text) : null;
   },
-
-  async select(table, query = '') {
-    return this.query(`/${table}${query}`);
-  },
-
-  async insert(table, data) {
-    return this.query(`/${table}`, 'POST', data);
-  },
-
-  async update(table, data, query) {
-    return this.query(`/${table}${query}`, 'PATCH', data);
-  },
-
-  async upsert(table, data, onConflict = '') {
-    const path = `/${table}${onConflict ? `?on_conflict=${onConflict}` : ''}`;
-    const res = await fetch(`${supabaseUrl}/rest/v1${path}`, {
-      method: 'POST',
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-        'Content-Type': 'application/json',
-        Prefer: 'resolution=merge-duplicates,return=representation',
-      },
-      body: JSON.stringify(data),
-    });
-    const text = await res.text();
-    if (!res.ok) throw new Error(`Supabase upsert error ${res.status}: ${text}`);
-    return text ? JSON.parse(text) : null;
-  },
+  select: (table, q='')    => supabase._req(`/${table}${q}`),
+  insert: (table, data)    => supabase._req(`/${table}`, 'POST', data),
+  update: (table, data, q) => supabase._req(`/${table}${q}`, 'PATCH', data),
 };
 
-// ─── KV Storage (Netlify Blobs as lightweight KV) ─────────────────────────────
-// For environments without Supabase, use in-memory + Netlify Blobs
-// In production, replace with Supabase calls
+// ─── JWT (minimal, no external deps) ──────────────────────────────────────────
+const JWT_SECRET = process.env.JWT_SECRET || 'norcanto-dev-secret-change-in-production-min32';
 
-// ─── JWT (minimal implementation for session tokens) ─────────────────────────
-const JWT_SECRET = process.env.JWT_SECRET || 'quickdocs-dev-secret-change-in-production';
-
-const base64UrlEncode = (str) =>
-  Buffer.from(str).toString('base64')
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-
-const base64UrlDecode = (str) => {
-  const padded = str + '==='.slice((str.length + 3) % 4);
-  return Buffer.from(padded.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString();
-};
+const b64url = (s) => Buffer.from(s).toString('base64').replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+const b64dec  = (s) => { const p = s + '==='.slice((s.length+3)%4); return Buffer.from(p.replace(/-/g,'+').replace(/_/g,'/'),'base64').toString(); };
 
 const signJWT = (payload) => {
-  const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const body = base64UrlEncode(JSON.stringify({ ...payload, iat: Math.floor(Date.now() / 1000) }));
-  const sig = base64UrlEncode(
-    crypto.createHmac('sha256', JWT_SECRET).update(`${header}.${body}`).digest('binary')
-  );
-  return `${header}.${body}.${sig}`;
+  const h = b64url(JSON.stringify({ alg:'HS256', typ:'JWT' }));
+  const b = b64url(JSON.stringify({ ...payload, iat: Math.floor(Date.now()/1000) }));
+  const s = b64url(crypto.createHmac('sha256', JWT_SECRET).update(`${h}.${b}`).digest('binary'));
+  return `${h}.${b}.${s}`;
 };
 
 const verifyJWT = (token) => {
   try {
-    const [header, body, sig] = token.split('.');
-    const expectedSig = base64UrlEncode(
-      crypto.createHmac('sha256', JWT_SECRET).update(`${header}.${body}`).digest('binary')
-    );
-    if (sig !== expectedSig) return null;
-    const payload = JSON.parse(base64UrlDecode(body));
-    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) return null;
-    return payload;
-  } catch {
-    return null;
-  }
+    const [h, b, s] = token.split('.');
+    const expected  = b64url(crypto.createHmac('sha256', JWT_SECRET).update(`${h}.${b}`).digest('binary'));
+    if (s !== expected) return null;
+    const p = JSON.parse(b64dec(b));
+    if (p.exp && p.exp < Math.floor(Date.now()/1000)) return null;
+    return p;
+  } catch { return null; }
 };
 
-const extractToken = (event) => {
-  const auth = event.headers?.authorization || event.headers?.Authorization || '';
-  return auth.replace('Bearer ', '').trim();
-};
+const extractToken = (event) => (event.headers?.authorization || event.headers?.Authorization || '').replace('Bearer ','').trim();
 
-// ─── Password hashing ─────────────────────────────────────────────────────────
-const hashPassword = (password) =>
-  crypto.createHmac('sha256', JWT_SECRET).update(password).digest('hex');
+// ─── Password ──────────────────────────────────────────────────────────────────
+const hashPassword   = (pw) => crypto.createHmac('sha256', JWT_SECRET).update(pw).digest('hex');
+const verifyPassword = (pw, hash) => hashPassword(pw) === hash;
 
-const verifyPassword = (password, hash) => hashPassword(password) === hash;
-
-// ─── CamerPay helpers ────────────────────────────────────────────────────────
-const CAMERPAY_SECRET = process.env.CAMERPAY_SECRET_KEY || '';
-const CAMERPAY_API_KEY = process.env.CAMERPAY_API_KEY || '';
-const CAMERPAY_BASE_URL = 'https://app.camerpay.com/api/v1';
-
-const validateCamerPaySignature = (payload, receivedSig) => {
-  const computed = crypto
-    .createHmac('sha256', CAMERPAY_SECRET)
-    .update(JSON.stringify(payload))
-    .digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(receivedSig));
-};
-
-// ─── Rate limiter (in-memory per function invocation) ─────────────────────────
-const rateLimitStore = new Map();
-const rateLimit = (key, maxRequests = 10, windowMs = 60000) => {
+// ─── Rate limiter ──────────────────────────────────────────────────────────────
+const rlStore = new Map();
+const rateLimit = (key, max=10, windowMs=60000) => {
   const now = Date.now();
-  const entry = rateLimitStore.get(key) || { count: 0, start: now };
-  if (now - entry.start > windowMs) { entry.count = 0; entry.start = now; }
-  entry.count++;
-  rateLimitStore.set(key, entry);
-  return entry.count <= maxRequests;
+  const e   = rlStore.get(key) || { count:0, start:now };
+  if (now - e.start > windowMs) { e.count=0; e.start=now; }
+  e.count++; rlStore.set(key, e);
+  return e.count <= max;
 };
 
-// ─── Plan definitions ─────────────────────────────────────────────────────────
-const PLANS = {
-  free: {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    docs_per_month: 5,
-    pages_per_doc: 20,
-    ai_requests_per_month: 20,
-    storage_mb: 50,
-    chat_messages_per_doc: 10,
-    has_risk_detection: false,
-    has_action_items: false,
-    has_export: false,
-    has_priority: false,
-  },
-  trial: {
-    id: 'trial',
-    name: 'Trial',
-    price: 0,
-    docs_per_month: 20,
-    pages_per_doc: 100,
-    ai_requests_per_month: 100,
-    storage_mb: 200,
-    chat_messages_per_doc: 30,
-    has_risk_detection: true,
-    has_action_items: true,
-    has_export: true,
-    has_priority: false,
-    trial_days: 14,
-  },
-  premium: {
-    id: 'premium',
-    name: 'Premium',
-    price: 999, // cents
-    price_display: '$9.99',
-    docs_per_month: 100,
-    pages_per_doc: 200,
-    ai_requests_per_month: 500,
-    storage_mb: 1024,
-    chat_messages_per_doc: 100,
-    has_risk_detection: true,
-    has_action_items: true,
-    has_export: true,
-    has_priority: true,
-  },
-  pro: {
-    id: 'pro',
-    name: 'Pro',
-    price: 1999, // cents
-    price_display: '$19.99',
-    docs_per_month: -1, // unlimited
-    pages_per_doc: 1000,
-    ai_requests_per_month: -1,
-    storage_mb: 10240,
-    chat_messages_per_doc: -1,
-    has_risk_detection: true,
-    has_action_items: true,
-    has_export: true,
-    has_priority: true,
-    has_multi_doc: true,
-    has_advanced_chat: true,
-  },
-};
-
-const getPlanLimits = (planId) => PLANS[planId] || PLANS.free;
-
-// ─── Email helpers (via Netlify environment + fetch to email API) ─────────────
-const sendEmail = async (to, subject, htmlBody) => {
-  // Uses Mailgun or SendGrid if configured, otherwise logs
-  const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
-  const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || 'norcanto.com';
-
-  if (!MAILGUN_API_KEY) {
-    console.log(`[EMAIL] To: ${to} | Subject: ${subject}`);
-    return;
-  }
-
-  const formData = new URLSearchParams({
-    from: `Norcanto AI <noreply@${MAILGUN_DOMAIN}>`,
-    to,
-    subject,
-    html: htmlBody,
-  });
-
-  await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`, {
+// ─── Email (Mailgun, optional) ─────────────────────────────────────────────────
+const sendEmail = async (to, subject, html) => {
+  const key    = process.env.MAILGUN_API_KEY;
+  const domain = process.env.MAILGUN_DOMAIN || 'norcanto.com';
+  if (!key) { console.log(`[EMAIL] To:${to} | ${subject}`); return; }
+  await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
     method: 'POST',
-    headers: {
-      Authorization: `Basic ${Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')}`,
-    },
-    body: formData,
+    headers: { Authorization: `Basic ${Buffer.from(`api:${key}`).toString('base64')}` },
+    body: new URLSearchParams({ from:`Norcanto AI <noreply@${domain}>`, to, subject, html }),
   });
 };
 
-module.exports = {
-  respond,
-  respondOK,
-  respondError,
-  respondOptions,
-  corsHeaders,
-  supabase,
-  signJWT,
-  verifyJWT,
-  extractToken,
-  hashPassword,
-  verifyPassword,
-  validateCamerPaySignature,
-  CAMERPAY_SECRET,
-  CAMERPAY_API_KEY,
-  CAMERPAY_BASE_URL,
-  rateLimit,
-  PLANS,
-  getPlanLimits,
-  sendEmail,
-};
+module.exports = { respond, respondOK, respondErr, respondOptions, corsHeaders, supabase, signJWT, verifyJWT, extractToken, hashPassword, verifyPassword, rateLimit, sendEmail };

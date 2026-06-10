@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/nav.css">
   <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="/css/subscription.css">
 </head>
 <body>
 
@@ -40,10 +39,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Users
       </button>
-      <button class="admin-nav-item" onclick="showSection('subscriptions')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        Subscriptions
-      </button>
+
       <button class="admin-nav-item" onclick="showSection('payments')">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         Payments
@@ -73,10 +69,10 @@
       <h1 style="font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-8)">Overview</h1>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-4);margin-bottom:var(--space-8)">
         <div class="stat-card"><div class="stat-value" id="stat-total-users">-</div><div class="stat-label">Total Users</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-active-trials">-</div><div class="stat-label">Active Trials</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-active-subs">-</div><div class="stat-label">Active Subscriptions</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-revenue">-</div><div class="stat-label">Total Revenue</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-failed">-</div><div class="stat-label">Failed Payments</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-total-docs">-</div><div class="stat-label">Total Analyses</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-today-docs">-</div><div class="stat-label">Analyses Today</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-revenue" style="display:none">-</div><div class="stat-label" style="display:none">Revenue</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-failed" style="display:none">-</div><div class="stat-label" style="display:none">Failed</div></div>
       </div>
       <div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-lg);padding:var(--space-5)">
         <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:var(--space-4)">Recent Signups</div>
@@ -92,13 +88,7 @@
       </div>
     </div>
 
-    <!-- Subscriptions -->
-    <div id="section-subscriptions" class="admin-section" style="display:none">
-      <h1 style="font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-8)">Subscriptions</h1>
-      <div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-lg);padding:var(--space-5);overflow-x:auto">
-        <div id="subs-table"></div>
-      </div>
-    </div>
+
 
     <!-- Payments -->
     <div id="section-payments" class="admin-section" style="display:none">
@@ -141,16 +131,13 @@ const buildTable = (cols, rows, emptyMsg = 'No data') => {
 };
 
 const renderAdmin = (data) => {
-  const { stats, users, subscriptions, payments } = data;
-
-  // Stats
+  const { stats, users, analyses } = data;
   document.getElementById('stat-total-users').textContent = stats.total_users;
-  document.getElementById('stat-active-trials').textContent = stats.active_trials;
-  document.getElementById('stat-active-subs').textContent = stats.active_subscriptions;
-  document.getElementById('stat-revenue').textContent = fmtMoney(stats.total_revenue_cents);
-  document.getElementById('stat-failed').textContent = stats.failed_payments;
+  const docsEl = document.getElementById('stat-total-docs');
+  if (docsEl) docsEl.textContent = stats.total_analyses;
+  const todayEl = document.getElementById('stat-today-docs');
+  if (todayEl) todayEl.textContent = stats.analyses_today;
 
-  // Recent users table
   document.getElementById('recent-users-table').innerHTML = buildTable([
     { label: 'Name', key: 'name' },
     { label: 'Email', key: 'email' },
@@ -158,7 +145,6 @@ const renderAdmin = (data) => {
     { label: 'Joined', key: 'created_at', render: r => fmtDate(r.created_at) },
   ], (users || []).slice(0, 10), 'No users yet');
 
-  // Full users table
   document.getElementById('users-table').innerHTML = buildTable([
     { label: 'Name', key: 'name' },
     { label: 'Email', key: 'email' },
@@ -166,31 +152,16 @@ const renderAdmin = (data) => {
     { label: 'Joined', key: 'created_at', render: r => fmtDate(r.created_at) },
   ], users, 'No users yet');
 
-  // Subscriptions table
-  document.getElementById('subs-table').innerHTML = buildTable([
-    { label: 'User', key: 'user_id', render: r => {
-      const u = (users||[]).find(u => u.id === r.user_id);
-      return u ? u.email : r.user_id?.slice(0,8);
-    }},
-    { label: 'Plan', key: 'plan_id' },
-    { label: 'Status', key: 'status', render: r => statusPill(r.status) },
-    { label: 'Trial End', key: 'trial_end', render: r => fmtDate(r.trial_end) },
-    { label: 'Period End', key: 'current_period_end', render: r => fmtDate(r.current_period_end) },
-    { label: 'Created', key: 'created_at', render: r => fmtDate(r.created_at) },
-  ], subscriptions, 'No subscriptions yet');
-
-  // Payments table
-  document.getElementById('payments-table').innerHTML = buildTable([
-    { label: 'Reference', key: 'reference' },
-    { label: 'User', key: 'user_id', render: r => {
-      const u = (users||[]).find(u => u.id === r.user_id);
-      return u ? u.email : r.user_id?.slice(0,8);
-    }},
-    { label: 'Plan', key: 'plan_id' },
-    { label: 'Amount', key: 'amount', render: r => fmtMoney(r.amount) },
-    { label: 'Status', key: 'status', render: r => statusPill(r.status) },
+  const subsTable = document.getElementById('subs-table');
+  if (subsTable) subsTable.innerHTML = buildTable([
+    { label: 'User', key: 'user_id', render: r => { const u=(users||[]).find(u=>u.id===r.user_id); return u?u.email:r.user_id?.slice(0,8); }},
+    { label: 'File', key: 'file_name' },
+    { label: 'Type', key: 'file_type' },
     { label: 'Date', key: 'created_at', render: r => fmtDate(r.created_at) },
-  ], payments, 'No payments yet');
+  ], analyses, 'No analyses yet');
+
+  const paymentsTable = document.getElementById('payments-table');
+  if (paymentsTable) paymentsTable.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:var(--space-4)">Payments not enabled on this plan.</div>';
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

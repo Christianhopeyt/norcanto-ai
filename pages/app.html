@@ -9,107 +9,62 @@
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/nav.css">
   <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="/css/subscription.css">
 </head>
 <body>
 
-<!-- Nav -->
 <nav class="nav scrolled" id="main-nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="32" height="32"></div>
+      <div class="nav-logo-icon"><img src="/assets/norcanto_logo.png" alt="Norcanto" width="30" height="30"></div>
       <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
     </a>
     <div style="flex:1"></div>
     <div class="nav-actions">
-      <div style="display:none;align-items:center;gap:var(--space-3);" data-nav-user>
-        <div style="width:30px;height:30px;border-radius:8px;background:var(--brand-elevated);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text-secondary);" id="user-avatar">U</div>
-        <span style="font-size:13px;color:var(--text-secondary);" data-user-name>Account</span>
-        <button onclick="QDAuth.logout()" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">Sign out</button>
-      </div>
-      <a href="/pages/signin.html" class="btn btn-ghost nav-cta" data-nav-signin>Sign in</a>
-      <a href="/pages/signup.html" class="btn btn-primary nav-cta" data-nav-getstarted>Get Started</a>
+      <span id="user-greeting" style="font-size:13px;color:var(--text-muted);display:none"></span>
+      <button onclick="QDAuth.logout()" class="btn btn-ghost btn-sm" id="signout-btn" style="display:none">Sign out</button>
+      <a href="/pages/signin.html" class="btn btn-ghost nav-cta" id="signin-nav-btn">Sign in</a>
+      <a href="/pages/signup.html" class="btn btn-primary nav-cta" id="getstarted-nav-btn">Get Started</a>
     </div>
   </div>
 </nav>
 
-<!-- Trial banner -->
-<div class="trial-status-bar" id="trial-banner">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="color:var(--warning)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
-  <span data-trial-msg>Trial active:</span>
-  <strong class="trial-days" data-trial-days>14 days</strong>
-  <span>remaining</span>
-  <a href="/pages/pricing.html" class="upgrade-link">Upgrade now</a>
-</div>
+<!-- Sidebar overlay for mobile -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="app-layout">
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-section">
-      <button class="sidebar-upload-btn" data-open-upload>
+      <button class="sidebar-upload-btn" id="sidebar-upload-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         New Analysis
       </button>
       <nav>
-        <button class="sidebar-btn active" onclick="showView('documents')">
+        <button class="sidebar-btn active" id="btn-dashboard">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
           Dashboard
         </button>
-        <button class="sidebar-btn" onclick="showView('recent')">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Recent
-        </button>
       </nav>
     </div>
-
-    <div class="sidebar-section" style="flex:1">
-      <div class="sidebar-label">Documents</div>
+    <div class="sidebar-section" style="flex:1;overflow-y:auto">
+      <div class="sidebar-label">Recent Documents</div>
       <div id="sidebar-doc-list">
-        <div style="font-size:12px;color:var(--text-muted);padding:var(--space-2) var(--space-3)">No documents yet</div>
+        <div style="font-size:12px;color:var(--text-muted);padding:var(--space-2) var(--space-2)">No documents yet</div>
       </div>
     </div>
-
-    <!-- Subscription status -->
-    <div class="sidebar-section" id="sidebar-sub-section">
-      <div class="sub-status-card">
-        <div class="sub-status-header">
-          <div class="sub-plan-badge">
-            <div class="sub-plan-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            </div>
-            <span class="sub-plan-name" id="sidebar-plan-name">Free</span>
-          </div>
-          <span class="sub-status-pill free" id="sidebar-plan-status">Free</span>
-        </div>
-        <div class="usage-bars" id="sidebar-usage">
-          <div class="usage-bar-item">
-            <div class="usage-bar-top">
-              <span>Documents</span>
-              <span id="usage-docs-text">0 / 5</span>
-            </div>
-            <div class="usage-bar-track"><div class="usage-bar-fill" id="usage-docs-bar" style="width:0%"></div></div>
-          </div>
-          <div class="usage-bar-item">
-            <div class="usage-bar-top">
-              <span>AI Requests</span>
-              <span id="usage-ai-text">0 / 20</span>
-            </div>
-            <div class="usage-bar-track"><div class="usage-bar-fill" id="usage-ai-bar" style="width:0%"></div></div>
-          </div>
-        </div>
-        <a href="/pages/pricing.html" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:var(--space-4);font-size:12px;padding:8px;" id="sidebar-upgrade-btn">
-          Upgrade Plan
-        </a>
+    <div class="sidebar-section">
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Powered by Gemini AI
       </div>
     </div>
   </aside>
 
-  <!-- Main content -->
+  <!-- Main -->
   <div class="main-content">
-    <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-left">
-        <button class="nav-mobile-toggle" id="sidebar-toggle" aria-label="Toggle sidebar" style="display:none">
+        <button class="nav-mobile-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
@@ -117,253 +72,303 @@
       <div class="topbar-right">
         <div class="search-input">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Search documents..." id="doc-search" aria-label="Search documents">
+          <input type="text" placeholder="Search documents..." id="doc-search" autocomplete="off">
         </div>
-        <button class="btn btn-primary btn-sm" data-open-upload>
+        <button class="btn btn-primary btn-sm" id="topbar-upload-btn">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Upload
+          Analyze
         </button>
       </div>
     </div>
 
-    <!-- Dashboard body -->
-    <div class="dashboard-content" id="dashboard-body">
+    <div class="dashboard-content">
+      <!-- Welcome row -->
+      <div style="margin-bottom:var(--space-6)">
+        <h2 style="font-family:var(--font-display);font-size:clamp(20px,3vw,24px);font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-1)" id="welcome-heading">Dashboard</h2>
+        <p style="font-size:14px;color:var(--text-secondary)" id="welcome-sub">Upload a document to get AI-powered insights instantly.</p>
+      </div>
 
-      <!-- Welcome / empty state -->
-      <div id="view-welcome" style="display:block">
-        <div style="margin-bottom:var(--space-8)">
-          <h2 style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-2)" id="welcome-heading">Good day</h2>
-          <p style="font-size:14px;color:var(--text-secondary)">Upload a document to get started with AI analysis.</p>
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-4);margin-bottom:var(--space-6)">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-docs">0</div>
+          <div class="stat-label">Documents analyzed</div>
         </div>
-
-        <!-- Quick stats row -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);margin-bottom:var(--space-8)" id="stats-row">
-          <div class="stat-card">
-            <div class="stat-value" id="stat-docs">0</div>
-            <div class="stat-label">Documents analyzed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-plan">Free</div>
-            <div class="stat-label">Current plan</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-trial">14</div>
-            <div class="stat-label" id="stat-trial-label">Trial days remaining</div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-value">Free</div>
+          <div class="stat-label">Current plan</div>
         </div>
-
-        <!-- Documents grid -->
-        <div style="margin-bottom:var(--space-6);display:flex;align-items:center;justify-content:space-between;">
-          <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Recent Documents</div>
-        </div>
-
-        <div class="dashboard-grid" id="doc-grid">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- Empty state (shown when no docs) -->
-        <div class="empty-state" id="empty-state">
-          <div class="empty-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <div class="empty-title">No documents yet</div>
-          <div class="empty-desc">Upload your first document and get AI-powered insights in under a minute.</div>
-          <button class="btn btn-primary" data-open-upload>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            Analyze Your First Document
-          </button>
+        <div class="stat-card">
+          <div class="stat-value">Unlimited</div>
+          <div class="stat-label">Analyses available</div>
         </div>
       </div>
 
-    </div><!-- /dashboard-content -->
-  </div><!-- /main-content -->
-</div><!-- /app-layout -->
+      <!-- Section header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);flex-wrap:wrap;gap:var(--space-3)">
+        <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Your Documents</div>
+        <button class="btn btn-secondary btn-sm" id="clear-all-btn" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Clear all
+        </button>
+      </div>
+
+      <!-- Doc grid -->
+      <div class="dashboard-grid" id="doc-grid"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="empty-title">No documents yet</div>
+        <div class="empty-desc">Upload a PDF, DOCX, or TXT file and get AI-powered analysis in under a minute. It's free.</div>
+        <button class="btn btn-primary" id="empty-upload-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Analyze Your First Document
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Upload Modal -->
-<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title" id="modal-title">Analyze Document</h2>
-      <button class="modal-close" aria-label="Close">
+      <h2 class="modal-title">Analyze Document</h2>
+      <button class="modal-close" id="modal-close-btn" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div id="modal-body">
-      <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop file or click to browse">
-        <div class="dropzone-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </div>
-        <div class="dropzone-title">Drop your document here</div>
-        <div class="dropzone-desc">or click to browse</div>
-        <div class="dropzone-formats">
-          <span class="format-pill">PDF</span>
-          <span class="format-pill">DOCX</span>
-          <span class="format-pill">TXT</span>
-        </div>
-      </div>
+      <!-- Dropzone injected here -->
     </div>
-    <input type="file" id="file-input" accept=".pdf,.docx,.txt" style="display:none">
-    <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:var(--space-3)">Max 20MB. Processed securely by Norcanto AI.</p>
+    <input type="file" id="file-input" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" style="display:none">
+    <p id="modal-hint" style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:var(--space-3)">Max 20MB. Processed securely by Norcanto AI.</p>
   </div>
 </div>
 
-<script src="/js/main.js"></script>
 <script src="/js/auth.js"></script>
 <script>
-// ── Dashboard logic ────────────────────────────────────────────────────────────
+'use strict';
+
+// ── Storage ────────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'qd_documents';
+const loadDocs  = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } };
+const saveDocs  = (docs) => { localStorage.setItem(STORAGE_KEY, JSON.stringify(docs)); };
 
-const loadDocs = () => {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+// ── Helpers ────────────────────────────────────────────────────────────────────
+const getExt      = (name) => (name.split('.').pop() || 'txt').toLowerCase();
+const typeColor   = { pdf: 'var(--danger)', docx: 'var(--info)', txt: 'var(--success)' };
+const showToast   = (msg, type = 'info') => {
+  const colors = { error: 'var(--danger)', success: 'var(--success)', info: 'var(--text-muted)' };
+  const c = document.createElement('div');
+  c.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 48px);max-width:360px;';
+  c.innerHTML = `<div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-primary);box-shadow:var(--shadow-lg);text-align:center;border-left:3px solid ${colors[type]}">${msg}</div>`;
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 4000);
 };
-const saveDocs = (docs) => localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
 
-const typeColors = { pdf: 'var(--danger)', docx: 'var(--info)', txt: 'var(--success)' };
-const getExt = (name) => (name.split('.').pop() || 'txt').toLowerCase();
-
+// ── Render doc card ────────────────────────────────────────────────────────────
 const renderDocCard = (doc) => {
   const ext = getExt(doc.name);
+  const color = typeColor[ext] || 'var(--text-muted)';
+  const date = new Date(doc.date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'2-digit' });
+  const riskCount = (doc.analysis?.risks_detected || []).filter(r => r.severity !== 'locked').length;
   return `
-    <div class="doc-card" data-id="${doc.id}" onclick="openAnalysis('${doc.id}')">
+    <div class="doc-card" data-id="${doc.id}">
       <div class="doc-card-thumb">
         <div class="doc-card-thumb-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
-        <span class="doc-card-type-badge" style="color:${typeColors[ext] || 'var(--text-muted)'}">${ext.toUpperCase()}</span>
+        <span class="doc-card-type-badge" style="color:${color}">${ext.toUpperCase()}</span>
         <div class="doc-card-actions">
-          <button class="doc-action-btn" title="Open analysis" onclick="event.stopPropagation();openAnalysis('${doc.id}')">
+          <button class="doc-action-btn" title="View analysis" onclick="openDoc('${doc.id}')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
-          <button class="doc-action-btn" title="Reanalyze" onclick="event.stopPropagation();reanalyze('${doc.id}')">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          </button>
-          <button class="doc-action-btn" title="Delete" onclick="event.stopPropagation();deleteDoc('${doc.id}')">
+          <button class="doc-action-btn" title="Delete" onclick="deleteDoc('${doc.id}')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           </button>
         </div>
       </div>
       <div class="doc-card-body">
-        <div class="doc-card-name">${doc.name}</div>
+        <div class="doc-card-name" title="${doc.name}">${doc.name}</div>
         <div class="doc-card-meta">
           <span>${doc.size || ''}</span>
-          <span>${new Date(doc.date).toLocaleDateString('en-US', {month:'short',day:'numeric'})}</span>
+          <span>${date}</span>
         </div>
-        ${doc.analysis ? `<div class="doc-card-tags">
-          ${doc.analysis.document_type ? `<span class="doc-tag">${doc.analysis.document_type}</span>` : ''}
-          ${(doc.analysis.risks_detected?.length || 0) > 0 ? `<span class="doc-tag" style="color:var(--danger)">${doc.analysis.risks_detected.length} risks</span>` : ''}
-        </div>` : '<div class="doc-card-tags"><span class="doc-tag" style="color:var(--text-muted)">Pending analysis</span></div>'}
+        <div class="doc-card-tags">
+          ${doc.analysis?.document_type ? `<span class="doc-tag">${doc.analysis.document_type}</span>` : ''}
+          ${riskCount > 0 ? `<span class="doc-tag" style="color:var(--danger)">${riskCount} risk${riskCount>1?'s':''}</span>` : ''}
+          ${!doc.analysis ? '<span class="doc-tag" style="color:var(--text-muted)">Pending</span>' : ''}
+        </div>
       </div>
-    </div>
-  `;
+    </div>`;
 };
 
+// ── Render ─────────────────────────────────────────────────────────────────────
 const renderDocs = () => {
-  const docs = loadDocs();
-  const grid = document.getElementById('doc-grid');
+  const docs  = loadDocs();
+  const grid  = document.getElementById('doc-grid');
   const empty = document.getElementById('empty-state');
+  const clearBtn = document.getElementById('clear-all-btn');
   const sidebarList = document.getElementById('sidebar-doc-list');
+  document.getElementById('stat-docs').textContent = docs.length;
 
-  if (docs.length === 0) {
+  if (!docs.length) {
     grid.innerHTML = '';
     empty.style.display = 'flex';
-    sidebarList.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:var(--space-2) var(--space-3)">No documents yet</div>';
-  } else {
-    empty.style.display = 'none';
-    grid.innerHTML = docs.map(renderDocCard).join('');
-    sidebarList.innerHTML = docs.slice(0, 8).map(d => `
-      <button class="sidebar-btn" onclick="openAnalysis('${d.id}')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${d.name}</span>
-      </button>
-    `).join('');
+    if (clearBtn) clearBtn.style.display = 'none';
+    sidebarList.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:var(--space-2) var(--space-2)">No documents yet</div>';
+    return;
   }
-  document.getElementById('stat-docs').textContent = docs.length;
+  empty.style.display = 'none';
+  if (clearBtn) clearBtn.style.display = 'flex';
+  grid.innerHTML = docs.map(renderDocCard).join('');
+  sidebarList.innerHTML = docs.slice(0,10).map(d => `
+    <button class="sidebar-btn" onclick="openDoc('${d.id}')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${d.name}</span>
+    </button>`).join('');
+
+  // click on card body opens doc
+  grid.querySelectorAll('.doc-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.doc-card-actions')) openDoc(card.dataset.id);
+    });
+  });
 };
 
-const openAnalysis = (id) => {
-  window.location.href = `/pages/analysis.html?id=${id}`;
-};
-
-const reanalyze = (id) => {
-  window.location.href = `/pages/analysis.html?id=${id}&reanalyze=1`;
+// ── Navigation ─────────────────────────────────────────────────────────────────
+const openDoc = (id) => {
+  const docs = loadDocs();
+  const doc  = docs.find(d => d.id === id);
+  if (!doc) { showToast('Document not found. It may have been deleted.', 'error'); renderDocs(); return; }
+  window.location.href = `/pages/analysis.html?id=${encodeURIComponent(id)}`;
 };
 
 const deleteDoc = (id) => {
   if (!confirm('Delete this document and its analysis?')) return;
-  const docs = loadDocs().filter(d => d.id !== id);
-  saveDocs(docs);
+  saveDocs(loadDocs().filter(d => d.id !== id));
   renderDocs();
+  showToast('Document deleted.', 'info');
 };
 
-const showView = (v) => {
-  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-  event?.currentTarget?.classList.add('active');
+// ── Search ─────────────────────────────────────────────────────────────────────
+document.getElementById('doc-search').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.doc-card').forEach(card => {
+    const name = card.querySelector('.doc-card-name')?.textContent?.toLowerCase() || '';
+    card.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+});
+
+// ── Upload Modal ───────────────────────────────────────────────────────────────
+const openModal = () => {
+  renderDropzone();
+  document.getElementById('upload-modal').classList.add('open');
+  document.getElementById('modal-hint').style.display = 'block';
 };
 
-// ── File upload + AI analysis ──────────────────────────────────────────────────
-const handleUpload = async (file) => {
-  const allowed = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
-  if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|docx|txt)$/i)) {
-    showToast('Unsupported file type. Use PDF, DOCX, or TXT.', 'error'); return;
+const closeModal = () => {
+  document.getElementById('upload-modal').classList.remove('open');
+};
+
+const renderDropzone = () => {
+  document.getElementById('modal-body').innerHTML = `
+    <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop file or click to browse">
+      <div class="dropzone-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="dropzone-title">Drop your document here</div>
+      <div class="dropzone-desc">or click to browse files</div>
+      <div class="dropzone-formats">
+        <span class="format-pill">PDF</span>
+        <span class="format-pill">DOCX</span>
+        <span class="format-pill">TXT</span>
+      </div>
+    </div>`;
+  bindDropzone();
+};
+
+const bindDropzone = () => {
+  const dz = document.getElementById('dropzone');
+  const fi = document.getElementById('file-input');
+  if (!dz || !fi) return;
+  dz.onclick = () => fi.click();
+  dz.onkeydown = (e) => { if (e.key==='Enter'||e.key===' ') fi.click(); };
+  dz.ondragover  = (e) => { e.preventDefault(); dz.classList.add('drag-over'); };
+  dz.ondragleave = () => dz.classList.remove('drag-over');
+  dz.ondrop = (e) => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); };
+  fi.onchange = () => { if (fi.files[0]) handleFile(fi.files[0]); fi.value = ''; };
+};
+
+// ── File processing ────────────────────────────────────────────────────────────
+const handleFile = async (file) => {
+  // Validate
+  const validTypes = ['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','text/plain'];
+  const validExts  = /\.(pdf|docx|txt)$/i;
+  if (!validTypes.includes(file.type) && !validExts.test(file.name)) {
+    showErrorInModal('Unsupported file type. Please upload a PDF, DOCX, or TXT file.'); return;
   }
   if (file.size > 20 * 1024 * 1024) {
-    showToast('File too large. Max 20MB.', 'error'); return;
+    showErrorInModal('File too large. Maximum size is 20MB.'); return;
   }
 
-  const modalBody = document.getElementById('modal-body');
   const docId = crypto.randomUUID();
-  const ext = file.name.split('.').pop().toLowerCase();
+  const ext   = getExt(file.name);
+  const isPdf = ext === 'pdf';
 
-  // Show progress
-  modalBody.innerHTML = `
-    <div style="padding:var(--space-4)">
+  // Show progress UI
+  document.getElementById('modal-hint').style.display = 'none';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="padding:var(--space-2)">
       <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5)">
-        <div class="dropzone-icon" style="margin:0;flex-shrink:0">
+        <div class="dropzone-icon" style="margin:0;flex-shrink:0;width:40px;height:40px">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
-        <div>
-          <div style="font-size:14px;font-weight:500;color:var(--text-primary)">${file.name}</div>
+        <div style="min-width:0">
+          <div style="font-size:14px;font-weight:500;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${file.name}</div>
           <div style="font-size:12px;color:var(--text-muted)">${(file.size/1024/1024).toFixed(2)} MB</div>
         </div>
       </div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="prog" style="width:0%"></div></div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:var(--space-2)" id="prog-label">Reading file...</div>
-    </div>
-  `;
+      <div class="progress-bar-wrap"><div class="progress-bar" id="prog" style="width:5%"></div></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:var(--space-2);text-align:center" id="prog-label">Reading file...</div>
+    </div>`;
 
   const setProgress = (pct, label) => {
-    const bar = document.getElementById('prog');
-    const lbl = document.getElementById('prog-label');
-    if (bar) bar.style.width = pct + '%';
-    if (lbl) lbl.textContent = label;
+    const b = document.getElementById('prog');
+    const l = document.getElementById('prog-label');
+    if (b) b.style.width = pct + '%';
+    if (l) l.textContent = label;
   };
 
   try {
+    // Step 1: read file
     setProgress(15, 'Reading file...');
-    const reader = new FileReader();
-    let fileText = '';
-    let base64Data = '';
-    let isPdf = file.type === 'application/pdf' || ext === 'pdf';
+    let textContent = '';
+    let base64Data  = '';
 
-    await new Promise((res, rej) => {
-      reader.onload = (e) => {
-        if (isPdf) { base64Data = e.target.result.split(',')[1]; }
-        else { fileText = e.target.result; }
-        res();
+    await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Failed to read file.'));
+      reader.onload  = (e) => {
+        if (isPdf) base64Data = e.target.result.split(',')[1];
+        else textContent = e.target.result;
+        resolve();
       };
-      reader.onerror = rej;
       isPdf ? reader.readAsDataURL(file) : reader.readAsText(file);
     });
 
-    setProgress(35, 'Sending to AI...');
-
-    // Call server-side analysis
-    const token = QDAuth.getToken();
-    const body = {
+    // Step 2: call AI
+    setProgress(35, 'Sending to Gemini AI...');
+    const token = QDAuth.getToken ? QDAuth.getToken() : null;
+    const reqBody = {
       file_name: file.name,
       file_type: file.type || 'text/plain',
       pages: 1,
-      ...(isPdf ? { base64_data: base64Data } : { text: fileText }),
+      ...(isPdf ? { base64_data: base64Data } : { text: textContent }),
     };
 
     const res = await fetch('/api/analyze', {
@@ -372,176 +377,113 @@ const handleUpload = async (file) => {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(reqBody),
     });
 
     setProgress(80, 'Processing insights...');
-    const data = await res.json();
+
+    let data;
+    try { data = await res.json(); } catch { throw new Error('Server returned an invalid response. Please try again.'); }
 
     if (!res.ok || !data.success) {
-      throw new Error(data.error || 'Analysis failed. Please try again.');
+      throw new Error(data.error || `Analysis failed (${res.status}). Check your GEMINI_API_KEY.`);
     }
 
-    setProgress(100, 'Analysis complete!');
-
-    // Save to local storage
+    // Step 3: save to localStorage BEFORE redirect
+    setProgress(95, 'Saving analysis...');
     const doc = {
-      id: docId,
-      name: file.name,
-      size: `${(file.size/1024/1024).toFixed(2)} MB`,
+      id:       docId,
+      name:     file.name,
+      size:     `${(file.size/1024/1024).toFixed(2)} MB`,
       ext,
-      date: new Date().toISOString(),
+      date:     new Date().toISOString(),
       analysis: data.analysis,
-      server_id: data.document_id,
     };
-    const docs = loadDocs();
-    docs.unshift(doc);
-    saveDocs(docs);
 
-    await new Promise(r => setTimeout(r, 600));
-    document.getElementById('upload-modal').classList.remove('open');
-    window.location.href = `/pages/analysis.html?id=${docId}`;
+    const existing = loadDocs();
+    existing.unshift(doc);
+    saveDocs(existing);
+
+    // Verify the save worked before redirecting
+    const verify = loadDocs().find(d => d.id === docId);
+    if (!verify) throw new Error('Failed to save analysis locally. Please try again.');
+
+    setProgress(100, 'Complete! Opening analysis...');
+
+    // Small delay so user sees 100%, then redirect
+    setTimeout(() => {
+      closeModal();
+      window.location.href = `/pages/analysis.html?id=${encodeURIComponent(docId)}`;
+    }, 700);
 
   } catch (err) {
-    setProgress(0, '');
-    modalBody.innerHTML = `
-      <div style="padding:var(--space-6);text-align:center">
-        <div style="color:var(--danger);font-size:14px;margin-bottom:var(--space-4)">${err.message}</div>
-        <button class="btn btn-primary" onclick="resetDropzone()">Try Again</button>
-      </div>
-    `;
+    showErrorInModal(err.message || 'Something went wrong. Please try again.');
   }
 };
 
-const resetDropzone = () => {
-  const modalBody = document.getElementById('modal-body');
-  modalBody.innerHTML = `
-    <div class="dropzone" id="dropzone" role="button" tabindex="0">
-      <div class="dropzone-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-      <div class="dropzone-title">Drop your document here</div>
-      <div class="dropzone-desc">or click to browse</div>
-      <div class="dropzone-formats"><span class="format-pill">PDF</span><span class="format-pill">DOCX</span><span class="format-pill">TXT</span></div>
-    </div>
-  `;
-  initDropzone();
+const showErrorInModal = (msg) => {
+  document.getElementById('modal-hint').style.display = 'block';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="padding:var(--space-4);text-align:center">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--tint-red);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <div style="color:var(--text-primary);font-size:14px;font-weight:500;margin-bottom:var(--space-2)">Analysis Failed</div>
+      <div style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--space-5);line-height:1.5">${msg}</div>
+      <button class="btn btn-primary" onclick="renderDropzone();document.getElementById('modal-hint').style.display='block'">Try Again</button>
+    </div>`;
 };
 
-const initDropzone = () => {
-  const dz = document.getElementById('dropzone');
-  const fi = document.getElementById('file-input');
-  if (!dz) return;
-  dz.addEventListener('click', () => fi?.click());
-  dz.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') fi?.click(); });
-  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag-over'); });
-  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleUpload(e.dataTransfer.files[0]); });
-  fi?.addEventListener('change', () => { if (fi.files[0]) handleUpload(fi.files[0]); });
-};
-
-// Search
-document.getElementById('doc-search')?.addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase();
-  document.querySelectorAll('.doc-card').forEach(card => {
-    const name = card.querySelector('.doc-card-name')?.textContent?.toLowerCase() || '';
-    card.style.display = name.includes(q) ? '' : 'none';
-  });
-});
-
-// Sidebar mobile toggle
-const sidebarToggle = document.getElementById('sidebar-toggle');
-const sidebar = document.getElementById('sidebar');
-sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+// ── Sidebar mobile ─────────────────────────────────────────────────────────────
+const openSidebar  = () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('show'); };
+const closeSidebar = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Update welcome heading
-  const user = QDAuth.getUser();
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-  const heading = document.getElementById('welcome-heading');
-  if (heading) heading.textContent = user?.name ? `${greeting}, ${user.name.split(' ')[0]}` : greeting;
+  // Auth display
+  const user = QDAuth.getUser ? QDAuth.getUser() : null;
+  if (user) {
+    const greeting = document.getElementById('user-greeting');
+    const signout  = document.getElementById('signout-btn');
+    const signinBtn  = document.getElementById('signin-nav-btn');
+    const startedBtn = document.getElementById('getstarted-nav-btn');
+    if (greeting) { greeting.textContent = `Hi, ${user.name?.split(' ')[0] || 'there'}`; greeting.style.display = 'inline'; }
+    if (signout)  signout.style.display = 'inline-flex';
+    if (signinBtn)  signinBtn.style.display = 'none';
+    if (startedBtn) startedBtn.style.display = 'none';
 
-  // Update avatar
-  const avatar = document.getElementById('user-avatar');
-  if (avatar && user?.name) avatar.textContent = user.name[0].toUpperCase();
-
-  // Update plan stats
-  const sub = QDAuth.getSubscription();
-  const planId = QDAuth.getPlanId();
-  const planNames = { free: 'Free', trial: 'Trial', premium: 'Premium', pro: 'Pro' };
-  document.getElementById('stat-plan').textContent = planNames[planId] || 'Free';
-  document.getElementById('sidebar-plan-name').textContent = planNames[planId] || 'Free';
-
-  const statusEl = document.getElementById('sidebar-plan-status');
-  if (statusEl) {
-    statusEl.textContent = sub?.status === 'trialing' ? 'Trial' : (sub?.status === 'active' ? 'Active' : 'Free');
-    statusEl.className = `sub-status-pill ${sub?.status === 'trialing' ? 'trial' : sub?.status === 'active' ? 'active' : 'free'}`;
+    const hour = new Date().getHours();
+    const g = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    const h = document.getElementById('welcome-heading');
+    if (h) h.textContent = `${g}, ${user.name?.split(' ')[0] || 'there'}`;
   }
 
-  if (QDAuth.isTrialing()) {
-    const days = QDAuth.getTrialDaysLeft();
-    document.getElementById('stat-trial').textContent = days;
-    document.getElementById('stat-trial-label').textContent = 'Trial days remaining';
-  } else if (planId !== 'free') {
-    document.getElementById('stat-trial').textContent = 'Active';
-    document.getElementById('stat-trial-label').textContent = 'Subscription status';
-  }
+  // Bind open modal buttons
+  ['sidebar-upload-btn','topbar-upload-btn','empty-upload-btn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', openModal);
+  });
 
-  // Hide upgrade btn if on paid plan
-  if (planId === 'premium' || planId === 'pro') {
-    const upgradeBtn = document.getElementById('sidebar-upgrade-btn');
-    if (upgradeBtn) upgradeBtn.style.display = 'none';
-  }
+  // Close modal
+  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
+  document.getElementById('upload-modal')?.addEventListener('click', (e) => { if (e.target.id === 'upload-modal') closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-  // Refresh usage from server if logged in
-  if (QDAuth.isLoggedIn()) {
-    QDAuth.refreshStatus().then(data => {
-      if (!data) return;
-      const { usage, limits } = data;
-      const docsText = document.getElementById('usage-docs-text');
-      const docsBar = document.getElementById('usage-docs-bar');
-      const aiText = document.getElementById('usage-ai-text');
-      const aiBar = document.getElementById('usage-ai-bar');
-      if (docsText) docsText.textContent = `${usage.docs_uploaded} / ${limits.docs_per_month === -1 ? '∞' : limits.docs_per_month}`;
-      if (docsBar) {
-        const pct = limits.docs_per_month === -1 ? 0 : (usage.docs_uploaded / limits.docs_per_month) * 100;
-        docsBar.style.width = Math.min(pct, 100) + '%';
-        docsBar.className = `usage-bar-fill${pct > 90 ? ' danger' : pct > 70 ? ' warning' : ''}`;
-      }
-      if (aiText) aiText.textContent = `${usage.ai_requests} / ${limits.ai_requests_per_month === -1 ? '∞' : limits.ai_requests_per_month}`;
-      if (aiBar) {
-        const pct = limits.ai_requests_per_month === -1 ? 0 : (usage.ai_requests / limits.ai_requests_per_month) * 100;
-        aiBar.style.width = Math.min(pct, 100) + '%';
-        aiBar.className = `usage-bar-fill${pct > 90 ? ' danger' : pct > 70 ? ' warning' : ''}`;
-      }
-    });
-  }
+  // Sidebar toggle
+  document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
+  });
 
-  initDropzone();
+  // Clear all
+  document.getElementById('clear-all-btn')?.addEventListener('click', () => {
+    if (!confirm('Delete all documents and analyses? This cannot be undone.')) return;
+    saveDocs([]);
+    renderDocs();
+    showToast('All documents cleared.', 'info');
+  });
+
+  renderDropzone();
   renderDocs();
 });
-
-// Upload modal open/close
-document.querySelectorAll('[data-open-upload]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    resetDropzone();
-    document.getElementById('upload-modal').classList.add('open');
-  });
-});
-document.querySelector('.modal-close')?.addEventListener('click', () => {
-  document.getElementById('upload-modal').classList.remove('open');
-});
-document.getElementById('upload-modal')?.addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
-});
-
-function showToast(msg, type) {
-  const c = document.createElement('div');
-  c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;';
-  c.innerHTML = `<div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-primary);max-width:320px;box-shadow:var(--shadow-lg);animation:fadeUp 0.3s ease">${msg}</div>`;
-  document.body.appendChild(c);
-  setTimeout(() => c.remove(), 4000);
-}
 </script>
 </body>
 </html>

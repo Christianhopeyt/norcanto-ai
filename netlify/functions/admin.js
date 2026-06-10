@@ -1,53 +1,33 @@
 // netlify/functions/admin.js
-const {
-  respondOK, respondError, respondOptions,
-  supabase, verifyJWT, extractToken
-} = require('./_shared/utils');
+'use strict';
+const { respondOK, respondErr, respondOptions, supabase, verifyJWT, extractToken } = require('./_shared/utils');
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return respondOptions();
 
-  const token = extractToken(event);
-  if (!token) return respondError('Unauthorized', 401);
+  const token   = extractToken(event);
+  if (!token) return respondErr('Unauthorized', 401);
   const payload = verifyJWT(token);
-  if (!payload || payload.role !== 'admin') return respondError('Admin access required', 403);
-
-  const path = event.path.replace('/api/admin/', '').replace('/.netlify/functions/admin/', '');
+  if (!payload || payload.role !== 'admin') return respondErr('Admin access required', 403);
 
   try {
-    if (path === 'stats' || path === '') {
-      const [users, subs, payments, usage] = await Promise.all([
-        supabase.select('users', '?select=id,email,name,created_at,role&order=created_at.desc&limit=100'),
-        supabase.select('subscriptions', '?select=*&order=created_at.desc&limit=200'),
-        supabase.select('payments', '?select=*&order=created_at.desc&limit=200'),
-        supabase.select('usage_tracking', '?select=*&order=created_at.desc&limit=100'),
-      ]);
+    const [users, docs] = await Promise.all([
+      supabase.select('users', '?select=id,email,name,role,created_at&order=created_at.desc&limit=200'),
+      supabase.select('document_analyses', '?select=id,user_id,file_name,file_type,created_at&order=created_at.desc&limit=200'),
+    ]);
 
-      const now = new Date();
-      const totalRevenue = (payments || []).filter(p => p.status === 'succeeded').reduce((s, p) => s + (p.amount || 0), 0);
-      const activeTrials = (subs || []).filter(s => s.status === 'trialing' && new Date(s.trial_end) > now).length;
-      const activeSubs = (subs || []).filter(s => s.status === 'active' && new Date(s.current_period_end) > now).length;
-      const failedPayments = (payments || []).filter(p => p.status === 'failed').length;
+    const totalUsers  = (users  || []).length;
+    const totalDocs   = (docs   || []).length;
+    const todayStart  = new Date(); todayStart.setHours(0,0,0,0);
+    const docsToday   = (docs || []).filter(d => new Date(d.created_at) >= todayStart).length;
 
-      return respondOK({
-        stats: {
-          total_users: (users || []).length,
-          active_trials: activeTrials,
-          active_subscriptions: activeSubs,
-          total_revenue_cents: totalRevenue,
-          failed_payments: failedPayments,
-          total_payments: (payments || []).length,
-        },
-        users: users || [],
-        subscriptions: subs || [],
-        payments: payments || [],
-        usage: usage || [],
-      });
-    }
-
-    return respondError('Unknown admin endpoint', 404);
+    return respondOK({
+      stats: { total_users: totalUsers, total_analyses: totalDocs, analyses_today: docsToday },
+      users:     users || [],
+      analyses:  docs  || [],
+    });
   } catch (err) {
     console.error('Admin error:', err);
-    return respondError('Admin request failed', 500);
+    return respondErr('Admin request failed', 500);
   }
 };

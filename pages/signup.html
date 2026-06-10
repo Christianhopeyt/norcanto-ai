@@ -10,7 +10,6 @@
   <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/nav.css">
-  <link rel="stylesheet" href="/css/subscription.css">
 </head>
 <body>
 
@@ -39,9 +38,9 @@
     <h1 class="auth-title">Create your account</h1>
     <p class="auth-subtitle">Start analyzing documents with AI in seconds.</p>
 
-    <div class="auth-trial-banner">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      <span><strong>14-day free trial included.</strong> Full premium features, no credit card required.</span>
+    <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-6);display:flex;align-items:center;gap:var(--space-3)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span style="font-size:13px;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Completely free.</strong> All features included, no credit card needed.</span>
     </div>
 
     <form id="signup-form" novalidate>
@@ -95,11 +94,11 @@
 
     <!-- What you get -->
     <div style="margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--brand-border);">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3);">Included in your trial</div>
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3);">What you get for free</div>
       <div style="display:flex;flex-direction:column;gap:var(--space-2);">
         <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
-          20 document analyses with full AI intelligence
+          Unlimited document analyses with full AI intelligence
         </div>
         <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
@@ -107,7 +106,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
-          Unlimited AI document chat for 14 days
+          AI document chat on every document
         </div>
       </div>
     </div>
@@ -186,7 +185,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next') || '/pages/app.html';
     const upgrade = params.get('upgrade');
-    window.location.href = upgrade ? `/pages/pricing.html?upgrade=${upgrade}` : next;
+    window.location.href = next;
   } catch (err) {
     const genErr = document.getElementById('form-general-error');
     if (genErr) { genErr.textContent = err.message; genErr.style.display = 'block'; }
