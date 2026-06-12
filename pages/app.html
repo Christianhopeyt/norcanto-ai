@@ -53,6 +53,7 @@
       </div>
     </div>
     <div class="sidebar-section">
+      <div class="storage-status" id="storage-status">Guest workspace · documents stored locally</div>
       <div style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.5">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Powered by Gemini AI
@@ -82,6 +83,10 @@
     </div>
 
     <div class="dashboard-content">
+      <div class="sync-banner" id="sync-banner" style="display:none">
+        <span>You have local guest analyses. Import them to your account to access them across devices.</span>
+        <button class="btn btn-secondary btn-sm" id="sync-local-btn">Import local analyses</button>
+      </div>
       <!-- Welcome row -->
       <div style="margin-bottom:var(--space-6)">
         <h2 style="font-family:var(--font-display);font-size:clamp(20px,3vw,24px);font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-1)" id="welcome-heading">Dashboard</h2>
@@ -95,22 +100,44 @@
           <div class="stat-label">Documents analyzed</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">Free</div>
-          <div class="stat-label">Current plan</div>
+          <div class="stat-value" id="stat-risks">0</div>
+          <div class="stat-label">High-risk items</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value">Unlimited</div>
-          <div class="stat-label">Analyses available</div>
+          <div class="stat-value" id="stat-deadlines">0</div>
+          <div class="stat-label">Upcoming deadlines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-storage">Local</div>
+          <div class="stat-label">Storage status</div>
         </div>
       </div>
+
+      <section class="attention-section" id="attention-section" style="display:none">
+        <strong>Needs attention</strong>
+        <div class="attention-items" id="attention-items"></div>
+      </section>
 
       <!-- Section header -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);flex-wrap:wrap;gap:var(--space-3)">
         <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Your Documents</div>
         <button class="btn btn-secondary btn-sm" id="clear-all-btn" style="display:none">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
-          Clear all
+          Archive all
         </button>
+      </div>
+
+      <div class="workspace-toolbar">
+        <select class="workspace-select" id="doc-sort" aria-label="Sort documents">
+          <option value="recent">Recent</option><option value="name">Name</option><option value="type">Type</option><option value="risk">Risk</option><option value="deadline">Deadline</option>
+        </select>
+        <select class="workspace-select" id="type-filter" aria-label="Filter by document type"><option value="">All types</option></select>
+        <select class="workspace-select" id="risk-filter" aria-label="Filter by risk severity"><option value="">All risks</option><option value="high">High risk</option><option value="medium">Medium risk</option><option value="low">Low risk</option></select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary)"><input type="checkbox" id="favorites-filter"> Favorites</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary)"><input type="checkbox" id="archive-filter"> Archive</label>
+        <div class="view-toggle" aria-label="Document view">
+          <button id="grid-view-btn" class="active" aria-label="Grid view">▦</button><button id="list-view-btn" aria-label="List view">☷</button>
+        </div>
       </div>
 
       <!-- Doc grid -->
@@ -122,7 +149,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
         <div class="empty-title">No documents yet</div>
-        <div class="empty-desc">Upload a PDF, DOCX, or TXT file and get AI-powered analysis in under a minute. It's free.</div>
+        <div class="empty-desc">Upload a PDF, DOCX, or TXT file and get AI-powered analysis in under a minute. All analysis features are included.</div>
         <button class="btn btn-primary" id="empty-upload-btn">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Analyze Your First Document
@@ -133,10 +160,10 @@
 </div>
 
 <!-- Upload Modal -->
-<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true">
+<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="upload-modal-title">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title">Analyze Document</h2>
+      <h2 class="modal-title" id="upload-modal-title">Analyze Document</h2>
       <button class="modal-close" id="modal-close-btn" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -146,6 +173,10 @@
     </div>
     <input type="file" id="file-input" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" style="display:none">
     <p id="modal-hint" style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:var(--space-3)">Max 20MB. Processed securely by Norcanto AI.</p>
+    <div class="trust-panel" style="margin-top:var(--space-4)">
+      <strong>No API key required.</strong> Documents are processed through Norcanto AI’s secure backend using Google Gemini.
+      Guest analyses remain in this browser; signed-in analyses are cloud synced. Verify important AI-generated findings before acting.
+    </div>
   </div>
 </div>
 
@@ -157,6 +188,34 @@
 const STORAGE_KEY = 'qd_documents';
 const loadDocs  = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } };
 const saveDocs  = (docs) => { localStorage.setItem(STORAGE_KEY, JSON.stringify(docs)); };
+let cloudDocs = [];
+let allDocs = [];
+const safe = (value) => window.Norcanto?.escapeHTML(value) || String(value || '');
+const isSignedIn = () => Boolean(QDAuth.getToken?.());
+const normalizeCloudDoc = (doc) => ({
+  id: doc.id, name: doc.title || doc.file_name, originalName: doc.file_name, ext: doc.file_type,
+  date: doc.created_at, analysis: typeof doc.analysis === 'string' ? JSON.parse(doc.analysis) : doc.analysis,
+  notes: doc.metadata?.notes || '', chatHistory: doc.metadata?.chatHistory || [],
+  completedActions: doc.metadata?.completedActions || [], favorite: doc.favorite, archived: doc.archived,
+  storage: 'cloud'
+});
+const refreshAllDocs = () => {
+  const local = loadDocs().map(doc => ({ ...doc, storage: 'local' }));
+  allDocs = isSignedIn() ? [...cloudDocs, ...local] : local;
+};
+const patchCloudDoc = async (id, changes) => {
+  const response = await QDAuth.authFetch('/api/documents', { method:'PATCH', body:JSON.stringify({ id, ...changes }) });
+  if (!response.ok) throw new Error('Could not update cloud document');
+};
+const fetchCloudDocs = async () => {
+  if (!isSignedIn()) { refreshAllDocs(); return; }
+  try {
+    const response = await QDAuth.authFetch('/api/documents');
+    const data = await response.json();
+    cloudDocs = (data.documents || []).map(normalizeCloudDoc);
+  } catch { showToast('Cloud history is temporarily unavailable. Local documents are still accessible.', 'error'); }
+  refreshAllDocs();
+};
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 const getExt      = (name) => (name.split('.').pop() || 'txt').toLowerCase();
@@ -165,7 +224,10 @@ const showToast   = (msg, type = 'info') => {
   const colors = { error: 'var(--danger)', success: 'var(--success)', info: 'var(--text-muted)' };
   const c = document.createElement('div');
   c.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 48px);max-width:360px;';
-  c.innerHTML = `<div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-primary);box-shadow:var(--shadow-lg);text-align:center;border-left:3px solid ${colors[type]}">${msg}</div>`;
+  c.setAttribute('role','status'); c.setAttribute('aria-live','polite');
+  const inner=document.createElement('div');
+  inner.style.cssText=`background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-primary);box-shadow:var(--shadow-lg);text-align:center;border-left:3px solid ${colors[type]}`;
+  inner.textContent=msg; c.appendChild(inner);
   document.body.appendChild(c);
   setTimeout(() => c.remove(), 4000);
 };
@@ -177,44 +239,67 @@ const renderDocCard = (doc) => {
   const date = new Date(doc.date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'2-digit' });
   const riskCount = (doc.analysis?.risks_detected || []).filter(r => r.severity !== 'locked').length;
   return `
-    <div class="doc-card" data-id="${doc.id}">
+    <article class="doc-card" data-id="${safe(doc.id)}" data-storage="${doc.storage || 'local'}">
       <div class="doc-card-thumb">
         <div class="doc-card-thumb-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
         <span class="doc-card-type-badge" style="color:${color}">${ext.toUpperCase()}</span>
         <div class="doc-card-actions">
-          <button class="doc-action-btn" title="View analysis" onclick="openDoc('${doc.id}')">
+          <button class="doc-action-btn" aria-label="Open ${safe(doc.name)}" onclick="openDoc('${safe(doc.id)}')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
-          <button class="doc-action-btn" title="Delete" onclick="deleteDoc('${doc.id}')">
+          <button class="doc-action-btn" aria-label="${doc.favorite ? 'Remove favorite' : 'Add favorite'}" onclick="toggleFavorite('${safe(doc.id)}')">★</button>
+          <button class="doc-action-btn" aria-label="${doc.archived ? 'Restore' : 'Archive'} ${safe(doc.name)}" onclick="archiveDoc('${safe(doc.id)}')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           </button>
         </div>
       </div>
       <div class="doc-card-body">
-        <div class="doc-card-name" title="${doc.name}">${doc.name}</div>
+        <a class="doc-card-name" href="/pages/analysis.html?id=${encodeURIComponent(doc.id)}" title="${safe(doc.name)}">${safe(doc.name)}</a>
         <div class="doc-card-meta">
           <span>${doc.size || ''}</span>
           <span>${date}</span>
         </div>
         <div class="doc-card-tags">
-          ${doc.analysis?.document_type ? `<span class="doc-tag">${doc.analysis.document_type}</span>` : ''}
+          ${doc.analysis?.document_type ? `<span class="doc-tag">${safe(doc.analysis.document_type)}</span>` : ''}
           ${riskCount > 0 ? `<span class="doc-tag" style="color:var(--danger)">${riskCount} risk${riskCount>1?'s':''}</span>` : ''}
+          <span class="doc-tag">${doc.storage === 'cloud' ? 'Cloud synced' : 'Local'}</span>
+          ${doc.favorite ? '<span class="doc-tag" style="color:var(--warning)">Favorite</span>' : ''}
+          ${doc.archived ? '<span class="doc-tag">Archived</span>' : ''}
           ${!doc.analysis ? '<span class="doc-tag" style="color:var(--text-muted)">Pending</span>' : ''}
         </div>
       </div>
-    </div>`;
+    </article>`;
 };
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 const renderDocs = () => {
-  const docs  = loadDocs();
+  refreshAllDocs();
+  const query = document.getElementById('doc-search')?.value.toLowerCase().trim() || '';
+  const type = document.getElementById('type-filter')?.value || '';
+  const risk = document.getElementById('risk-filter')?.value || '';
+  const favorites = document.getElementById('favorites-filter')?.checked;
+  const archived = document.getElementById('archive-filter')?.checked;
+  const sort = document.getElementById('doc-sort')?.value || 'recent';
+  let docs = allDocs.filter(doc => {
+    const risks = doc.analysis?.risks_detected || [];
+    return (!query || doc.name.toLowerCase().includes(query)) && (!type || doc.analysis?.document_type === type) &&
+      (!risk || risks.some(item => item.severity === risk)) && (!favorites || doc.favorite) && Boolean(doc.archived) === Boolean(archived);
+  });
+  const riskScore = (doc) => Math.max(0, ...(doc.analysis?.risks_detected || []).map(r => ({high:3,medium:2,low:1}[r.severity] || 0)));
+  docs.sort((a,b) => sort === 'name' ? a.name.localeCompare(b.name) : sort === 'type' ? (a.analysis?.document_type || '').localeCompare(b.analysis?.document_type || '') : sort === 'risk' ? riskScore(b)-riskScore(a) : new Date(b.date)-new Date(a.date));
   const grid  = document.getElementById('doc-grid');
   const empty = document.getElementById('empty-state');
   const clearBtn = document.getElementById('clear-all-btn');
   const sidebarList = document.getElementById('sidebar-doc-list');
-  document.getElementById('stat-docs').textContent = docs.length;
+  document.getElementById('stat-docs').textContent = allDocs.filter(d=>!d.archived).length;
+  document.getElementById('stat-risks').textContent = allDocs.reduce((n,d)=>n+(d.analysis?.risks_detected||[]).filter(r=>r.severity==='high').length,0);
+  document.getElementById('stat-deadlines').textContent = allDocs.reduce((n,d)=>n+(d.analysis?.important_dates||[]).filter(x=>x.urgency==='high').length,0);
+  document.getElementById('stat-storage').textContent = isSignedIn() ? `${cloudDocs.length} cloud` : `${allDocs.length} local`;
+  const attention = allDocs.filter(d => !d.archived && (d.analysis?.risks_detected||[]).some(r=>r.severity==='high')).slice(0,5);
+  document.getElementById('attention-section').style.display = attention.length ? 'block' : 'none';
+  document.getElementById('attention-items').innerHTML = attention.map(d=>`<button class="attention-item" onclick="openDoc('${safe(d.id)}')">${safe(d.name)}</button>`).join('');
 
   if (!docs.length) {
     grid.innerHTML = '';
@@ -229,7 +314,7 @@ const renderDocs = () => {
   sidebarList.innerHTML = docs.slice(0,10).map(d => `
     <button class="sidebar-btn" onclick="openDoc('${d.id}')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${d.name}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${safe(d.name)}</span>
     </button>`).join('');
 
   // click on card body opens doc
@@ -242,37 +327,46 @@ const renderDocs = () => {
 
 // ── Navigation ─────────────────────────────────────────────────────────────────
 const openDoc = (id) => {
-  const docs = loadDocs();
-  const doc  = docs.find(d => d.id === id);
+  const doc  = allDocs.find(d => d.id === id);
   if (!doc) { showToast('Document not found. It may have been deleted.', 'error'); renderDocs(); return; }
+  if (doc.storage === 'cloud') sessionStorage.setItem('norcanto_cloud_doc', JSON.stringify(doc));
   window.location.href = `/pages/analysis.html?id=${encodeURIComponent(id)}`;
 };
 
-const deleteDoc = (id) => {
-  if (!confirm('Delete this document and its analysis?')) return;
-  saveDocs(loadDocs().filter(d => d.id !== id));
+const archiveDoc = async (id) => {
+  const doc = allDocs.find(d => d.id === id);
+  if (!doc) return;
+  const archived=!doc.archived;
+  if (doc.storage === 'cloud') { doc.archived = archived; await patchCloudDoc(id, { archived }).catch(()=>{ doc.archived=!archived; }); }
+  else { saveDocs(loadDocs().map(d => d.id === id ? {...d, archived} : d)); }
   renderDocs();
-  showToast('Document deleted.', 'info');
+  showToast(archived ? 'Document archived. Open Archive to restore it.' : 'Document restored.', 'info');
+};
+const toggleFavorite = async (id) => {
+  const doc = allDocs.find(d => d.id === id); if (!doc) return;
+  const favorite = !doc.favorite;
+  if (doc.storage === 'cloud') await patchCloudDoc(id,{favorite}).catch(()=>{});
+  else saveDocs(loadDocs().map(d=>d.id===id?{...d,favorite}:d));
+  doc.favorite=favorite; renderDocs();
 };
 
 // ── Search ─────────────────────────────────────────────────────────────────────
-document.getElementById('doc-search').addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.doc-card').forEach(card => {
-    const name = card.querySelector('.doc-card-name')?.textContent?.toLowerCase() || '';
-    card.style.display = (!q || name.includes(q)) ? '' : 'none';
-  });
-});
+document.getElementById('doc-search').addEventListener('input', renderDocs);
 
 // ── Upload Modal ───────────────────────────────────────────────────────────────
 const openModal = () => {
   renderDropzone();
-  document.getElementById('upload-modal').classList.add('open');
+  const modal=document.getElementById('upload-modal');
+  modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  window._modalTrigger=document.activeElement;
+  setTimeout(()=>document.getElementById('dropzone')?.focus(),0);
   document.getElementById('modal-hint').style.display = 'block';
 };
 
 const closeModal = () => {
-  document.getElementById('upload-modal').classList.remove('open');
+  const modal=document.getElementById('upload-modal');
+  modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+  window._modalTrigger?.focus?.();
 };
 
 const renderDropzone = () => {
@@ -306,6 +400,7 @@ const bindDropzone = () => {
 
 // ── File processing ────────────────────────────────────────────────────────────
 const handleFile = async (file) => {
+  if (!navigator.onLine) { showErrorInModal('You are offline. Saved analyses remain available, but new analyses require a connection.'); return; }
   // Validate
   const validTypes = ['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','text/plain'];
   const validExts  = /\.(pdf|docx|txt)$/i;
@@ -329,12 +424,12 @@ const handleFile = async (file) => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
         <div style="min-width:0">
-          <div style="font-size:14px;font-weight:500;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${file.name}</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${safe(file.name)}</div>
           <div style="font-size:12px;color:var(--text-muted)">${(file.size/1024/1024).toFixed(2)} MB</div>
         </div>
       </div>
       <div class="progress-bar-wrap"><div class="progress-bar" id="prog" style="width:5%"></div></div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:var(--space-2);text-align:center" id="prog-label">Reading file...</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:var(--space-2);text-align:center" id="prog-label" role="status" aria-live="polite">Reading file...</div>
     </div>`;
 
   const setProgress = (pct, label) => {
@@ -368,6 +463,7 @@ const handleFile = async (file) => {
       file_name: file.name,
       file_type: file.type || 'text/plain',
       pages: 1,
+      language: window.Norcanto?.getLanguage?.() || 'en',
       ...(isPdf ? { base64_data: base64Data } : { text: textContent }),
     };
 
@@ -392,7 +488,7 @@ const handleFile = async (file) => {
     // Step 3: save to localStorage BEFORE redirect
     setProgress(95, 'Saving analysis...');
     const doc = {
-      id:       docId,
+      id:       data.document_id || docId,
       name:     file.name,
       size:     `${(file.size/1024/1024).toFixed(2)} MB`,
       ext,
@@ -400,20 +496,23 @@ const handleFile = async (file) => {
       analysis: data.analysis,
     };
 
-    const existing = loadDocs();
-    existing.unshift(doc);
-    saveDocs(existing);
-
-    // Verify the save worked before redirecting
-    const verify = loadDocs().find(d => d.id === docId);
-    if (!verify) throw new Error('Failed to save analysis locally. Please try again.');
+    if (data.document_id && isSignedIn()) {
+      doc.storage = 'cloud';
+      sessionStorage.setItem('norcanto_cloud_doc', JSON.stringify(doc));
+    } else {
+      const existing = loadDocs();
+      existing.unshift(doc);
+      saveDocs(existing);
+      const verify = loadDocs().find(d => d.id === doc.id);
+      if (!verify) throw new Error('Failed to save analysis locally. Please try again.');
+    }
 
     setProgress(100, 'Complete! Opening analysis...');
 
     // Small delay so user sees 100%, then redirect
     setTimeout(() => {
       closeModal();
-      window.location.href = `/pages/analysis.html?id=${encodeURIComponent(docId)}`;
+      window.location.href = `/pages/analysis.html?id=${encodeURIComponent(doc.id)}`;
     }, 700);
 
   } catch (err) {
@@ -429,14 +528,14 @@ const showErrorInModal = (msg) => {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </div>
       <div style="color:var(--text-primary);font-size:14px;font-weight:500;margin-bottom:var(--space-2)">Analysis Failed</div>
-      <div style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--space-5);line-height:1.5">${msg}</div>
+      <div style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--space-5);line-height:1.5">${safe(msg)}</div>
       <button class="btn btn-primary" onclick="renderDropzone();document.getElementById('modal-hint').style.display='block'">Try Again</button>
     </div>`;
 };
 
 // ── Sidebar mobile ─────────────────────────────────────────────────────────────
-const openSidebar  = () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('show'); };
-const closeSidebar = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); };
+const openSidebar  = () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar').setAttribute('aria-hidden','false'); document.getElementById('sidebar-overlay').classList.add('show'); };
+const closeSidebar = () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar').setAttribute('aria-hidden',String(matchMedia('(max-width:900px)').matches)); document.getElementById('sidebar-overlay').classList.remove('show'); document.getElementById('sidebar-toggle')?.setAttribute('aria-expanded','false'); };
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -470,25 +569,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sidebar toggle
   document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
+    const opening=!document.getElementById('sidebar').classList.contains('open');
+    opening ? openSidebar() : closeSidebar();
+    document.getElementById('sidebar-toggle').setAttribute('aria-expanded',String(opening));
+  });
+  document.getElementById('sidebar-toggle')?.setAttribute('aria-expanded','false');
+  const updateSidebarA11y=()=>document.getElementById('sidebar').setAttribute('aria-hidden',String(matchMedia('(max-width:900px)').matches&&!document.getElementById('sidebar').classList.contains('open')));
+  window.addEventListener('resize',updateSidebarA11y);updateSidebarA11y();
+  document.getElementById('upload-modal')?.addEventListener('keydown',(event)=>{
+    if(event.key!=='Tab')return;const focusable=[...event.currentTarget.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled);
+    if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   });
 
-  // Clear all
+  // Archive all
   document.getElementById('clear-all-btn')?.addEventListener('click', () => {
-    if (!confirm('Delete all documents and analyses? This cannot be undone.')) return;
-    saveDocs([]);
+    saveDocs(loadDocs().map(doc => ({...doc, archived:true})));
+    cloudDocs.filter(doc=>!doc.archived).forEach(doc=>patchCloudDoc(doc.id,{archived:true}).catch(()=>{}));
+    cloudDocs.forEach(doc=>{doc.archived=true;});
     renderDocs();
-    showToast('All documents cleared.', 'info');
+    showToast('All visible documents archived.', 'info');
+  });
+
+  ['doc-sort','type-filter','risk-filter','favorites-filter','archive-filter'].forEach(id=>document.getElementById(id)?.addEventListener('change',renderDocs));
+  document.getElementById('grid-view-btn')?.addEventListener('click',()=>{document.getElementById('doc-grid').classList.remove('list-view');document.getElementById('grid-view-btn').classList.add('active');document.getElementById('list-view-btn').classList.remove('active');});
+  document.getElementById('list-view-btn')?.addEventListener('click',()=>{document.getElementById('doc-grid').classList.add('list-view');document.getElementById('list-view-btn').classList.add('active');document.getElementById('grid-view-btn').classList.remove('active');});
+  document.getElementById('sync-local-btn')?.addEventListener('click', async()=>{
+    const docs=loadDocs(); if(!docs.length)return;
+    const res=await QDAuth.authFetch('/api/documents',{method:'POST',body:JSON.stringify({documents:docs})});
+    if(res.ok){saveDocs([]);document.getElementById('sync-banner').style.display='none';await fetchCloudDocs();renderDocs();showToast('Local analyses imported to your account.','success');}
   });
 
   renderDropzone();
-  renderDocs();
+  fetchCloudDocs().then(()=>{
+    const types=[...new Set(allDocs.map(d=>d.analysis?.document_type).filter(Boolean))];
+    document.getElementById('type-filter').innerHTML='<option value="">All types</option>'+types.map(x=>`<option>${safe(x)}</option>`).join('');
+    document.getElementById('sync-banner').style.display=isSignedIn()&&loadDocs().length?'flex':'none';
+    document.getElementById('storage-status').textContent=isSignedIn()?'Cloud sync active · local guest analyses can be imported':'Guest workspace · documents stored locally';
+    renderDocs();
+  });
 
   if (new URLSearchParams(window.location.search).get('upload') === '1') {
     openModal();
     history.replaceState({}, '', window.location.pathname);
   }
+  if (new URLSearchParams(window.location.search).get('pendingUpload') === '1') {
+    const request=indexedDB.open('norcanto_uploads',1);
+    request.onsuccess=()=>{const tx=request.result.transaction('pending','readwrite');const get=tx.objectStore('pending').get('file');get.onsuccess=()=>{if(get.result){openModal();handleFile(get.result);tx.objectStore('pending').delete('file');}};};
+    history.replaceState({}, '', window.location.pathname);
+  }
 });
 </script>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // netlify/functions/analyze.js
-// Server-side Gemini AI analysis — free, no quota limits enforced
+// Server-side Gemini AI analysis
 'use strict';
 const { respondOK, respondErr, respondOptions, supabase, verifyJWT, extractToken, rateLimit } = require('./_shared/utils');
 const crypto = require('node:crypto');
@@ -8,7 +8,8 @@ const GEMINI_KEY   = process.env.GEMINI_API_KEY || '';
 const GEMINI_MODEL = 'gemini-3.5-flash';
 const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-const PROMPT = (text, name) => `You are an expert document analyst for Norcanto AI. Analyze this document comprehensively.
+const PROMPT = (text, name, language = 'en') => `You are an expert document analyst for Norcanto AI. Analyze this document comprehensively.
+Write every generated field in ${language === 'fr' ? 'natural professional French' : 'clear professional English'}.
 
 Document: ${name}
 Content:
@@ -66,7 +67,7 @@ exports.handler = async (event) => {
   let body;
   try { body = JSON.parse(event.body || '{}'); } catch { return respondErr('Invalid request body'); }
 
-  const { text, file_name, file_type, base64_data, pages = 1 } = body;
+  const { text, file_name, file_type, base64_data, pages = 1, language = 'en' } = body;
   if (!file_name) return respondErr('file_name is required');
   if (!text && !base64_data) return respondErr('text or base64_data is required');
 
@@ -75,10 +76,10 @@ exports.handler = async (event) => {
     if (base64_data && (file_type === 'application/pdf' || file_name.endsWith('.pdf'))) {
       raw = await callGemini([{ role:'user', parts:[
         { inline_data: { mime_type:'application/pdf', data:base64_data } },
-        { text: PROMPT('[PDF document — extract and analyze all text]', file_name) }
+        { text: PROMPT('[PDF document — extract and analyze all text]', file_name, language) }
       ]}]);
     } else {
-      raw = await callGemini([{ role:'user', parts:[{ text: PROMPT((text||'').slice(0,30000), file_name) }] }]);
+      raw = await callGemini([{ role:'user', parts:[{ text: PROMPT((text||'').slice(0,30000), file_name, language) }] }]);
     }
 
     const analysis = parseJSON(raw);
@@ -86,20 +87,21 @@ exports.handler = async (event) => {
     // Optionally store if user is authenticated
     const token   = extractToken(event);
     const payload = token ? verifyJWT(token) : null;
+    let documentId = null;
     if (payload?.sub) {
+      documentId = crypto.randomUUID();
       await supabase.insert('document_analyses', {
-        id: crypto.randomUUID(),
+        id: documentId,
         user_id: payload.sub,
         file_name,
         file_type: file_type || 'text/plain',
         pages_analyzed: pages,
-        plan_at_analysis: 'free',
         analysis: JSON.stringify(analysis),
         created_at: new Date().toISOString(),
       }).catch(console.error);
     }
 
-    return respondOK({ analysis, plan: 'free' });
+    return respondOK({ analysis, document_id: documentId });
   } catch (err) {
     console.error('Analysis error:', err);
     if (err.message === 'GEMINI_API_NOT_CONFIGURED') return respondErr('AI service not configured. Contact support.', 503);

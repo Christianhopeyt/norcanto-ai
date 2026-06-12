@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Allow: /pages/pricing.html
 Allow: /pages/how-to-use.html
 Allow: /pages/about.html
 Allow: /pages/contact.html
@@ -13,8 +12,6 @@ Disallow: /pages/analysis.html
 Disallow: /pages/admin.html
 Disallow: /pages/signin.html
 Disallow: /pages/signup.html
-Disallow: /pages/payment-success.html
-Disallow: /pages/payment-verify.html
 Disallow: /.netlify/
 Disallow: /netlify/
 Disallow: /database/

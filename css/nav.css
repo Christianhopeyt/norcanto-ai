@@ -9,6 +9,8 @@
   transition: border-color var(--transition), background var(--transition);
 }
 .nav.scrolled { border-bottom-color: var(--brand-border); background: rgba(10,10,11,0.96); }
+[data-theme="light"] .nav { background: rgba(246,247,249,0.88); }
+[data-theme="light"] .nav.scrolled { background: rgba(246,247,249,0.97); }
 
 .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 var(--space-6); gap: var(--space-4); }
 @media (max-width: 480px) { .nav-inner { padding: 0 var(--space-4); } }
@@ -32,7 +34,7 @@
 
 /* Dropdown */
 .nav-dropdown { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-8px); background: var(--brand-charcoal); border: 1px solid var(--brand-border); border-radius: var(--radius-lg); padding: var(--space-2); min-width: 210px; box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--transition), transform var(--transition), visibility var(--transition); z-index: 100; }
-.nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-item:hover .nav-dropdown, .nav-item.open .nav-dropdown, .nav-item:focus-within .nav-dropdown { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 .dropdown-item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius); transition: background var(--transition-fast); }
 .dropdown-item:hover { background: var(--accent-ghost); }
 .dropdown-icon { width: 30px; height: 30px; border-radius: 7px; background: var(--brand-elevated); border: 1px solid var(--brand-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-secondary); }
@@ -65,4 +67,5 @@
   .nav-actions { gap: var(--space-2); }
   .nav-actions .nav-cta { display: none; }
   .nav-logo-wordmark { font-size: 13px; }
+  .nav-mobile-toggle { width:44px; height:44px; }
 }

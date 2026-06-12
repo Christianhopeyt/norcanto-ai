@@ -66,7 +66,7 @@
       </button>
     </form>
 
-    <p class="auth-footer">No account yet? <a href="/pages/signup.html">Create one free</a></p>
+    <p class="auth-footer">No account yet? <a href="/pages/signup.html">Create an account</a></p>
   </div>
 </div>
 
@@ -106,7 +106,6 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
   try {
     await QDAuth.login(email, password);
     const p = new URLSearchParams(window.location.search);
-    const upgrade = p.get('upgrade');
     window.location.href = p.get('next') || '/pages/app.html';
   } catch (err) {
     const el = document.getElementById('form-general-error');
@@ -116,5 +115,6 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
   }
 });
 </script>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
--- Norcanto AI — Database Schema (Free Platform)
+-- Norcanto AI — Database Schema
 -- Run this in your Supabase SQL Editor
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -24,12 +24,19 @@ CREATE TABLE IF NOT EXISTS document_analyses (
   file_type        TEXT,
   file_size_bytes  INT,
   pages_analyzed   INT DEFAULT 1,
-  plan_at_analysis TEXT DEFAULT 'free',
   analysis         JSONB,
+  title            TEXT,
+  metadata         JSONB NOT NULL DEFAULT '{}'::jsonb,
+  favorite         BOOLEAN NOT NULL DEFAULT FALSE,
+  archived         BOOLEAN NOT NULL DEFAULT FALSE,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_doc_analyses_user_id  ON document_analyses(user_id);
 CREATE INDEX IF NOT EXISTS idx_doc_analyses_created  ON document_analyses(created_at DESC);
+ALTER TABLE document_analyses ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE document_analyses ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE document_analyses ADD COLUMN IF NOT EXISTS favorite BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE document_analyses ADD COLUMN IF NOT EXISTS archived BOOLEAN NOT NULL DEFAULT FALSE;
 
 -- ─── ROW LEVEL SECURITY ───────────────────────────────────────────────────────
 ALTER TABLE users             ENABLE ROW LEVEL SECURITY;

@@ -40,10 +40,6 @@
         Users
       </button>
 
-      <button class="admin-nav-item" onclick="showSection('payments')">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Payments
-      </button>
     </nav>
   </aside>
 
@@ -71,8 +67,6 @@
         <div class="stat-card"><div class="stat-value" id="stat-total-users">-</div><div class="stat-label">Total Users</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-total-docs">-</div><div class="stat-label">Total Analyses</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-today-docs">-</div><div class="stat-label">Analyses Today</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-revenue" style="display:none">-</div><div class="stat-label" style="display:none">Revenue</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-failed" style="display:none">-</div><div class="stat-label" style="display:none">Failed</div></div>
       </div>
       <div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-lg);padding:var(--space-5)">
         <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:var(--space-4)">Recent Signups</div>
@@ -90,13 +84,6 @@
 
 
 
-    <!-- Payments -->
-    <div id="section-payments" class="admin-section" style="display:none">
-      <h1 style="font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:var(--space-8)">Payments</h1>
-      <div style="background:var(--brand-charcoal);border:1px solid var(--brand-border);border-radius:var(--radius-lg);padding:var(--space-5);overflow-x:auto">
-        <div id="payments-table"></div>
-      </div>
-    </div>
 
   </main>
 </div>
@@ -116,11 +103,6 @@ const showSection = (name) => {
 
 const fmt = (v) => v === null || v === undefined ? '-' : v;
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) : '-';
-const fmtMoney = (cents) => cents ? `${(cents / 100).toFixed(2)} XAF` : '0 XAF';
-const statusPill = (s) => {
-  const colors = { active: '#4ADE80', trialing: '#60A5FA', expired: '#F87171', cancelled: '#F87171', succeeded: '#4ADE80', failed: '#F87171', pending: '#FCD34D', free: '#888' };
-  return `<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(0,0,0,0.3);color:${colors[s]||'#888'}">${s}</span>`;
-};
 
 const buildTable = (cols, rows, emptyMsg = 'No data') => {
   if (!rows?.length) return `<div style="font-size:13px;color:var(--text-muted);padding:var(--space-4)">${emptyMsg}</div>`;
@@ -160,8 +142,6 @@ const renderAdmin = (data) => {
     { label: 'Date', key: 'created_at', render: r => fmtDate(r.created_at) },
   ], analyses, 'No analyses yet');
 
-  const paymentsTable = document.getElementById('payments-table');
-  if (paymentsTable) paymentsTable.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:var(--space-4)">Payments not enabled on this plan.</div>';
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -190,5 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 </script>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

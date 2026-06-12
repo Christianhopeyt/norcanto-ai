@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Norcanto AI is a production-ready AI document intelligence platform. Users upload PDFs, DOCX, or TXT files and receive AI-generated summaries, risk analysis, key dates, obligations, action items, and document chat. **Completely free — no subscriptions, no payment required.**
+Norcanto AI is a production-ready AI document intelligence platform. Users upload PDFs, DOCX, or TXT files and receive AI-generated summaries, risk analysis, key dates, obligations, action items, and document chat. All document-analysis features are included for every user.
 
 ---
 
@@ -80,7 +80,7 @@ netlify deploy --prod
 
 ## Supabase Setup
 
-1. Create a free project at [supabase.com](https://supabase.com)
+1. Create a project at [supabase.com](https://supabase.com)
 2. Go to **SQL Editor** and run the contents of `database/schema.sql`
 3. Go to **Settings > API** and copy:
    - Project URL → `SUPABASE_URL`
@@ -94,14 +94,14 @@ After signing up on the live site:
 
 ---
 
-## Get Gemini API Key (Free)
+## Get Gemini API Key
 
 1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 2. Sign in with Google
 3. Click **Create API key**
 4. Copy to `GEMINI_API_KEY`
 
-Free tier: 15 requests/minute, 1M tokens/day — sufficient for personal or small-team use.
+The configured Gemini service applies its own request-rate safeguards.
 
 ---
 

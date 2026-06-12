@@ -21,7 +21,6 @@ exports.handler = async (event) => {
     return respondOK({
       user: { id: user.id, email: user.email, name: user.name, role: user.role },
       usage: { docs_analyzed: docs?.length || 0 },
-      plan: 'free',
     });
   } catch (err) {
     console.error('Status error:', err);

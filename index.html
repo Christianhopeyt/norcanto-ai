@@ -40,7 +40,6 @@
     "name": "Norcanto AI",
     "applicationCategory": "BusinessApplication",
     "description": "AI-powered document intelligence platform",
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
     "operatingSystem": "Web",
     "url": "https://quickdocs.norcanto.com",
     "publisher": {"@type": "Organization", "name": "Norcanto", "url": "https://norcanto.com"}
@@ -99,8 +98,8 @@
     </ul>
     <div class="nav-divider"></div>
     <div class="nav-actions">
-      <a href="/pages/app.html" class="btn btn-ghost nav-cta">Sign in</a>
-      <a href="/pages/app.html" class="btn btn-primary nav-cta">Get Started</a>
+      <a href="/pages/signin.html" class="btn btn-ghost nav-cta" data-nav-signin>Sign in</a>
+      <a href="/pages/signup.html" class="btn btn-primary nav-cta" data-nav-getstarted>Get Started</a>
       <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle menu" aria-expanded="false">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="menu-icon" width="18" height="18"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
@@ -117,8 +116,8 @@
   <a href="/pages/blog/index.html" class="nav-mobile-link">Blog</a>
   <div class="nav-mobile-divider"></div>
   <div class="nav-mobile-actions">
-    <a href="/pages/app.html" class="btn btn-secondary" style="justify-content:center">Sign in</a>
-    <a href="/pages/app.html" class="btn btn-primary" style="justify-content:center">Get Started Free</a>
+    <a href="/pages/signin.html" class="btn btn-secondary" style="justify-content:center">Sign in</a>
+    <a href="/pages/signup.html" class="btn btn-primary" style="justify-content:center">Get Started</a>
   </div>
 </div>
 
@@ -149,10 +148,10 @@
       </p>
 
       <div class="hero-actions animate-fade-up delay-3">
-        <a class="btn btn-primary btn-lg" href="/pages/app.html?upload=1" aria-label="Analyze a document">
+        <button class="btn btn-primary btn-lg" data-open-upload aria-label="Analyze a document">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Analyze Document
-        </a>
+        </button>
         <a href="#how-it-works" class="btn btn-secondary btn-lg">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
           How It Works
@@ -166,7 +165,7 @@
         <div class="hero-stat-divider"></div>
         <div class="hero-stat"><div class="hero-stat-value">&lt;60s</div><div class="hero-stat-label">Average analysis</div></div>
         <div class="hero-stat-divider"></div>
-        <div class="hero-stat"><div class="hero-stat-value">Free</div><div class="hero-stat-label">To start</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">Included</div><div class="hero-stat-label">For everyone</div></div>
       </div>
     </div>
 
@@ -520,7 +519,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">Do I need my own API key?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        <div class="faq-a">Yes, Norcanto AI requires you to provide your own Google Gemini API key. This gives you full control over your usage and costs. You can get a free API key from Google AI Studio. Free tier API keys work fine for most personal use cases.</div>
+        <div class="faq-a">No. Norcanto AI processes documents through its secure backend using a protected server-side API configuration. Your API keys are never requested or exposed.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">Can I use Norcanto AI for legal advice?<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
@@ -536,12 +535,12 @@
         <div class="cta-glow"></div>
         <span class="section-label" style="position:relative">Get Started</span>
         <h2 class="cta-title" style="position:relative">Stop Reading.<br>Start Understanding.</h2>
-        <p class="cta-desc" style="position:relative">Upload your first document and get AI-powered insights in under a minute. Free to start, no credit card required.</p>
+        <p class="cta-desc" style="position:relative">Upload your first document and get AI-powered insights in under a minute. All document-analysis features are included.</p>
         <div class="cta-actions" style="position:relative">
-          <a class="btn btn-primary btn-lg" href="/pages/app.html?upload=1">
+          <button class="btn btn-primary btn-lg" data-open-upload>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Analyze Your First Document
-          </a>
+          </button>
           <a href="/pages/how-to-use.html" class="btn btn-ghost btn-lg">How It Works</a>
         </div>
       </div>
@@ -597,7 +596,7 @@
 </footer>
 
 <!-- Upload Modal -->
-<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title" id="modal-title">Analyze Document</h2>
@@ -619,9 +618,14 @@
     </div>
     <input type="file" id="file-input" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" style="display:none" aria-label="Select file">
     <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:var(--space-4);">Maximum 20MB. Your documents are processed securely.</p>
+    <div class="trust-panel" style="margin-top:var(--space-4)">
+      <strong>No API key required.</strong> Documents are processed using Google Gemini through Norcanto AI’s secure backend.
+      Guest analyses stay in this browser; signed-in analyses are cloud synced. Verify important AI-generated findings before acting.
+    </div>
   </div>
 </div>
 
 <script src="/js/main.js"></script>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

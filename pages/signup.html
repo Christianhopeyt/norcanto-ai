@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Account - Norcanto AI by Norcanto</title>
-  <meta name="description" content="Create your free Norcanto AI account. Start your 14-day trial with full AI document intelligence features.">
+  <meta name="description" content="Create your Norcanto AI account and securely sync your document analyses.">
   <meta name="robots" content="noindex">
   <link rel="canonical" href="https://quickdocs.norcanto.com/pages/signup.html">
   <link rel="icon" type="image/png" href="/assets/norcanto_logo.png">
@@ -21,7 +21,7 @@
       <div class="nav-logo-wordmark">Norcanto AI <span class="nav-logo-sub">by Norcanto</span></div>
     </a>
     <div class="nav-actions">
-      <span style="font-size:13px;color:var(--text-muted)">Already have an account?</span>
+      <span class="auth-nav-prompt">Already have an account?</span>
       <a href="/pages/signin.html" class="btn btn-ghost nav-cta">Sign in</a>
     </div>
   </div>
@@ -38,9 +38,9 @@
     <h1 class="auth-title">Create your account</h1>
     <p class="auth-subtitle">Start analyzing documents with AI in seconds.</p>
 
-    <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-6);display:flex;align-items:center;gap:var(--space-3)">
+    <div class="auth-benefit-banner">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      <span style="font-size:13px;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Completely free.</strong> All features included, no credit card needed.</span>
+      <span style="font-size:13px;color:var(--text-secondary)"><strong style="color:var(--text-primary)">All features included.</strong> Create an account to securely sync your document workspace.</span>
     </div>
 
     <form id="signup-form" novalidate>
@@ -80,7 +80,7 @@
 
       <button type="submit" class="btn btn-primary btn-lg form-btn" id="signup-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Create Free Account
+        Create Account
       </button>
 
       <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px;line-height:1.5;">
@@ -93,18 +93,18 @@
     <p class="auth-footer">Already have an account? <a href="/pages/signin.html">Sign in</a></p>
 
     <!-- What you get -->
-    <div style="margin-top:var(--space-6);padding-top:var(--space-6);border-top:1px solid var(--brand-border);">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3);">What you get for free</div>
-      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
-        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+    <div class="auth-includes">
+      <div class="auth-includes-title">What your workspace includes</div>
+      <div class="auth-includes-list">
+        <div class="auth-includes-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
-          Unlimited document analyses with full AI intelligence
+          Document analyses through Norcanto AI’s secure backend
         </div>
-        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+        <div class="auth-includes-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
           Risk detection, action items, and key dates
         </div>
-        <div style="display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--text-secondary);">
+        <div class="auth-includes-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
           AI document chat on every document
         </div>
@@ -184,15 +184,15 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     await QDAuth.register(name, email, password);
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next') || '/pages/app.html';
-    const upgrade = params.get('upgrade');
     window.location.href = next;
   } catch (err) {
     const genErr = document.getElementById('form-general-error');
     if (genErr) { genErr.textContent = err.message; genErr.style.display = 'block'; }
     btn.disabled = false;
-    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Free Account';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Account';
   }
 });
 </script>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

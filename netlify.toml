@@ -24,6 +24,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/auth/forgot-password"
+  to   = "/.netlify/functions/auth-forgot-password"
+  status = 200
+
+[[redirects]]
   from = "/api/user/status"
   to   = "/.netlify/functions/user-status"
   status = 200
@@ -31,6 +36,11 @@
 [[redirects]]
   from = "/api/analyze"
   to   = "/.netlify/functions/analyze"
+  status = 200
+
+[[redirects]]
+  from = "/api/documents"
+  to   = "/.netlify/functions/documents"
   status = 200
 
 [[redirects]]
@@ -52,4 +62,4 @@
   [headers.values]
     Access-Control-Allow-Origin  = "*"
     Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Methods = "GET, POST, PUT, PATCH, DELETE, OPTIONS"

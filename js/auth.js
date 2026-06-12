@@ -1,6 +1,12 @@
-/* Norcanto AI — Auth State Manager (no subscriptions, fully free platform) */
+/* Norcanto AI — Auth State Manager */
 'use strict';
 
+if (!document.querySelector('link[rel="manifest"]')) {
+  const manifest = document.createElement('link');
+  manifest.rel = 'manifest';
+  manifest.href = '/manifest.webmanifest';
+  document.head.appendChild(manifest);
+}
 const QDAuth = (() => {
   const TOKEN_KEY = 'qd_token';
   const USER_KEY  = 'qd_user';

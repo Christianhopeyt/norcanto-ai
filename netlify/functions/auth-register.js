@@ -1,5 +1,5 @@
 // netlify/functions/auth-register.js
-// Free platform — all features unlocked, no subscription required
+// Account registration
 'use strict';
 
 const { respondOK, respondErr, respondOptions, supabase, signJWT, hashPassword, rateLimit, sendEmail } = require('./_shared/utils');
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     await sendEmail(email, 'Welcome to Norcanto AI!', `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
         <h2>Welcome to Norcanto AI, ${name}!</h2>
-        <p>Your account is ready. All features are free — no credit card needed.</p>
+        <p>Your account is ready. All document-analysis features are included.</p>
         <p>Upload any PDF, DOCX, or TXT document and get instant AI intelligence: summaries, risk detection, key dates, action items, and more.</p>
         <a href="https://norcanto.com/pages/app.html" style="display:inline-block;background:#F5F5F0;color:#0A0A0B;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;">Open Norcanto AI</a>
         <p style="margin-top:32px;color:#666;font-size:13px;">Questions? hello@norcanto.com</p>

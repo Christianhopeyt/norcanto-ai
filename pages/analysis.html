@@ -42,6 +42,10 @@
 </nav>
 
 <div style="padding-top:var(--nav-height)">
+  <div class="analysis-mobile-tabs">
+    <button class="active" id="show-analysis-tab">Analysis</button>
+    <button id="show-chat-tab">Chat</button>
+  </div>
 
   <!-- Loading -->
   <div id="loading-state" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - var(--nav-height));gap:var(--space-4);padding:var(--space-8)">
@@ -73,7 +77,19 @@
           </div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-3)" id="doc-tags"></div>
+        <div class="analysis-tools">
+          <button class="btn btn-secondary btn-sm" id="rename-btn">Rename</button>
+          <button class="btn btn-secondary btn-sm" id="copy-report-btn">Copy report</button>
+          <button class="btn btn-secondary btn-sm" id="pdf-export-btn">Save PDF</button>
+          <button class="btn btn-secondary btn-sm" id="word-export-btn">Export Word</button>
+          <button class="btn btn-secondary btn-sm" id="share-btn">Share link</button>
+        </div>
       </div>
+      <nav class="analysis-toc" id="analysis-toc" aria-label="Analysis sections"></nav>
+      <section class="notes-panel">
+        <div class="insight-section-header"><div class="insight-section-title">Notes</div></div>
+        <textarea id="document-notes" placeholder="Add private notes about this document..." aria-label="Document notes"></textarea>
+      </section>
       <div id="analysis-sections"></div>
     </div>
 
@@ -111,6 +127,7 @@
 const STORAGE_KEY = 'qd_documents';
 let currentDoc    = null;
 let chatHistory   = [];
+const safe = (value) => window.Norcanto?.escapeHTML(value) || String(value || '');
 
 // ── Load document from localStorage ────────────────────────────────────────────
 const getDocId = () => {
@@ -123,8 +140,21 @@ const getDocId = () => {
 const loadDoc = (id) => {
   try {
     const docs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    return docs.find(d => d.id === id) || null;
+    return docs.find(d => d.id === id) || JSON.parse(sessionStorage.getItem('norcanto_cloud_doc') || 'null');
   } catch { return null; }
+};
+const persistDocument = async () => {
+  if (!currentDoc) return;
+  currentDoc.notes = document.getElementById('document-notes')?.value || currentDoc.notes || '';
+  currentDoc.chatHistory = chatHistory;
+  const metadata = { notes:currentDoc.notes, chatHistory, completedActions:currentDoc.completedActions || [] };
+  if (currentDoc.storage === 'cloud') {
+    await QDAuth.authFetch('/api/documents',{method:'PATCH',body:JSON.stringify({id:currentDoc.id,title:currentDoc.name,metadata})}).catch(()=>{});
+    sessionStorage.setItem('norcanto_cloud_doc',JSON.stringify(currentDoc));
+  } else {
+    const docs=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]').map(doc=>doc.id===currentDoc.id?{...doc,...currentDoc}:doc);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(docs));
+  }
 };
 
 // ── Section rendering helpers ───────────────────────────────────────────────────
@@ -149,6 +179,7 @@ const sectionHeader = (title, iconKey) => `
   <div class="insight-section-header">
     <div class="insight-section-icon">${ic(ICONS[iconKey] || ICONS.summary)}</div>
     <div class="insight-section-title">${title}</div>
+    <div class="section-actions"><button class="section-action copy-section" aria-label="Copy ${title}">⧉</button><button class="section-action collapse-section" aria-label="Collapse ${title}" aria-expanded="true">⌃</button></div>
   </div>`;
 
 const renderAnalysis = (a) => {
@@ -157,13 +188,13 @@ const renderAnalysis = (a) => {
   // Summary
   if (a.executive_summary) {
     html += `<div class="insight-section">${sectionHeader('Executive Summary','summary')}
-      <div class="insight-content">${a.executive_summary}</div></div>`;
+      <div class="insight-content">${safe(a.executive_summary)}</div></div>`;
   }
 
   // Plain language
   if (a.plain_language) {
     html += `<div class="insight-section">${sectionHeader('Plain Language Explanation','plain')}
-      <div class="insight-content">${a.plain_language}</div></div>`;
+      <div class="insight-content">${safe(a.plain_language)}</div></div>`;
   }
 
   // Key insights
@@ -172,7 +203,7 @@ const renderAnalysis = (a) => {
       <ul class="insight-list">${a.key_insights.map(i=>`
         <li class="insight-list-item">
           ${ic(ICONS.insights.replace('currentColor','var(--info)'))}
-          <span>${i}</span>
+          <span>${safe(i)}</span>
         </li>`).join('')}
       </ul></div>`;
   }
@@ -183,7 +214,7 @@ const renderAnalysis = (a) => {
       <ul class="insight-list">${a.important_dates.map(d=>`
         <li class="insight-list-item date-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${urgencyColor[d.urgency]||'var(--info)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS.dates}</svg>
-          <div><strong style="color:var(--text-primary)">${d.date}</strong> — ${d.description}</div>
+          <div><strong style="color:var(--text-primary)">${safe(d.date)}</strong> — ${safe(d.description)}</div>
         </li>`).join('')}
       </ul></div>`;
   }
@@ -196,8 +227,8 @@ const renderAnalysis = (a) => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${severityColor[r.severity]||'var(--text-muted)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">${ICONS.risk}</svg>
           <div>
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${severityColor[r.severity]||'var(--text-muted)'};margin-bottom:3px">${r.severity||'unknown'} risk</div>
-            <div>${r.risk}</div>
-            ${r.mitigation ? `<div style="font-size:12px;color:var(--text-muted);margin-top:3px">Suggestion: ${r.mitigation}</div>` : ''}
+            <div>${safe(r.risk)}</div>
+            ${r.mitigation ? `<div style="font-size:12px;color:var(--text-muted);margin-top:3px">Suggestion: ${safe(r.mitigation)}</div>` : ''}
           </div>
         </li>`).join('')}
       </ul></div>`;
@@ -209,7 +240,7 @@ const renderAnalysis = (a) => {
       <ul class="insight-list">${a.obligations.map(o=>`
         <li class="insight-list-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS.obligations}</svg>
-          <span>${o}</span>
+          <span>${safe(o)}</span>
         </li>`).join('')}
       </ul></div>`;
   }
@@ -221,19 +252,11 @@ const renderAnalysis = (a) => {
         <li class="insight-list-item action-item">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${priorityColor[item.priority]||'var(--success)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS.actions}</svg>
           <div>
-            <div>${item.action}</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${item.deadline && item.deadline!=='none' ? `Deadline: ${item.deadline}` : 'No specific deadline'}</div>
+            <label><input class="action-complete" type="checkbox" data-action="${safe(item.action)}"> ${safe(item.action)}</label>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${item.deadline && item.deadline!=='none' ? `Deadline: ${safe(item.deadline)}` : 'No specific deadline'}</div>
           </div>
         </li>`).join('')}
       </ul></div>`;
-  }
-
-  // Recommended questions (shown as clickable chips)
-  if (a.recommended_questions?.length) {
-    html += `<div class="insight-section">${sectionHeader('Suggested Questions','questions')}
-      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
-        ${a.recommended_questions.map(q=>`<button class="chat-suggestion" onclick="sendChat(${JSON.stringify(q)})">${q}</button>`).join('')}
-      </div></div>`;
   }
 
   return html || '<div style="color:var(--text-muted);font-size:14px;padding:var(--space-4)">No analysis data found.</div>';
@@ -244,13 +267,19 @@ const appendMsg = (role, content) => {
   const isUser = role === 'user';
   const el = document.createElement('div');
   el.className = `chat-msg ${role}`;
-  el.innerHTML = `
-    ${!isUser ? '<div class="chat-avatar ai">AI</div>' : ''}
-    <div><div class="chat-bubble">${content.replace(/\n/g,'<br>')}</div></div>
-    ${isUser  ? '<div class="chat-avatar">You</div>' : ''}`;
+  const avatar = document.createElement('div');
+  avatar.className = `chat-avatar${isUser ? '' : ' ai'}`;
+  avatar.textContent = isUser ? 'You' : 'AI';
+  const wrap = document.createElement('div');
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble';
+  bubble.textContent = content;
+  wrap.appendChild(bubble);
+  if (isUser) { el.append(wrap, avatar); } else { el.append(avatar, wrap); }
   const container = document.getElementById('chat-messages');
   container.appendChild(el);
   container.scrollTop = container.scrollHeight;
+  persistDocument();
 };
 
 const sendChat = async (question) => {
@@ -279,7 +308,7 @@ const sendChat = async (question) => {
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type':'application/json', ...(token ? {Authorization:`Bearer ${token}`} : {}) },
-      body: JSON.stringify({ file_name: currentDoc?.name || 'document', file_type:'text/plain', text: prompt, pages:1 }),
+      body: JSON.stringify({ file_name: currentDoc?.name || 'document', file_type:'text/plain', text: prompt, pages:1, language:window.Norcanto?.getLanguage?.() || 'en' }),
     });
 
     const data = await res.json();
@@ -325,6 +354,11 @@ const exportAnalysis = () => {
   a2.click();
   URL.revokeObjectURL(url);
 };
+const exportWord = () => {
+  if(!currentDoc)return;
+  const html=`<!doctype html><meta charset="utf-8"><title>${safe(currentDoc.name)}</title><h1>${safe(currentDoc.name)}</h1><pre style="white-space:pre-wrap;font-family:Arial">${safe(document.getElementById('analysis-sections').innerText)}</pre>`;
+  const url=URL.createObjectURL(new Blob([html],{type:'application/msword'}));const link=document.createElement('a');link.href=url;link.download=`${currentDoc.name.replace(/\.[^.]+$/,'')}-analysis.doc`;link.click();URL.revokeObjectURL(url);
+};
 
 // ── Init ───────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -341,8 +375,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Try loading immediately, then retry once after a short delay
   // (handles edge case where redirect was slightly faster than localStorage write)
-  const tryLoad = (attempt) => {
+  const tryLoad = async (attempt) => {
     currentDoc = loadDoc(docId);
+    if (!currentDoc && QDAuth.getToken?.()) {
+      try {
+        const response=await QDAuth.authFetch('/api/documents'); const data=await response.json();
+        const cloud=(data.documents||[]).find(doc=>doc.id===docId);
+        if(cloud) currentDoc={id:cloud.id,name:cloud.title||cloud.file_name,originalName:cloud.file_name,ext:cloud.file_type,date:cloud.created_at,analysis:typeof cloud.analysis==='string'?JSON.parse(cloud.analysis):cloud.analysis,notes:cloud.metadata?.notes||'',chatHistory:cloud.metadata?.chatHistory||[],completedActions:cloud.metadata?.completedActions||[],storage:'cloud'};
+      } catch {}
+    }
 
     if (!currentDoc) {
       if (attempt < 3) {
@@ -368,20 +409,47 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('doc-meta').textContent = `Analyzed ${new Date(currentDoc.date).toLocaleDateString('en-US',{dateStyle:'long'})} · Norcanto AI`;
 
     const tagsEl = document.getElementById('doc-tags');
-    if (currentDoc.analysis?.document_type)    tagsEl.innerHTML += `<span class="pill">${currentDoc.analysis.document_type}</span>`;
-    if (currentDoc.analysis?.complexity_score) tagsEl.innerHTML += `<span class="pill">Complexity ${currentDoc.analysis.complexity_score}/10</span>`;
-    if (currentDoc.analysis?.reading_time_minutes) tagsEl.innerHTML += `<span class="pill">${currentDoc.analysis.reading_time_minutes} min read</span>`;
+    if (currentDoc.analysis?.document_type)    tagsEl.innerHTML += `<span class="pill">${safe(currentDoc.analysis.document_type)}</span>`;
+    if (currentDoc.analysis?.complexity_score) tagsEl.innerHTML += `<span class="pill">Complexity ${safe(currentDoc.analysis.complexity_score)}/10</span>`;
+    if (currentDoc.analysis?.reading_time_minutes) tagsEl.innerHTML += `<span class="pill">${safe(currentDoc.analysis.reading_time_minutes)} min read</span>`;
 
     document.getElementById('analysis-sections').innerHTML = currentDoc.analysis
       ? renderAnalysis(currentDoc.analysis)
       : '<div style="color:var(--text-muted);font-size:14px;padding:var(--space-4)">No analysis data available for this document.</div>';
 
+    const sections=[...document.querySelectorAll('#analysis-sections .insight-section')];
+    const priority=['Risks Detected','Important Dates','Action Items'];
+    priority.slice().reverse().forEach(title=>{
+      const section=sections.find(s=>s.querySelector('.insight-section-title')?.textContent===title);
+      if(section)document.getElementById('analysis-sections').prepend(section);
+    });
+    document.getElementById('analysis-toc').innerHTML=[...document.querySelectorAll('#analysis-sections .insight-section')].map((section,index)=>{
+      const title=section.querySelector('.insight-section-title')?.textContent||`Section ${index+1}`;
+      section.id=`analysis-section-${index}`;
+      return `<a href="#${section.id}">${safe(title)}</a>`;
+    }).join('');
+    document.querySelectorAll('.collapse-section').forEach(button=>button.addEventListener('click',()=>{
+      const section=button.closest('.insight-section');const collapsed=section.classList.toggle('collapsed');
+      button.setAttribute('aria-expanded',String(!collapsed));
+    }));
+    document.querySelectorAll('.copy-section').forEach(button=>button.addEventListener('click',async()=>{
+      const section=button.closest('.insight-section');await navigator.clipboard.writeText(section.innerText.replace('⧉⌃',''));window.Norcanto?.announce('Section copied');
+    }));
+    document.querySelectorAll('.action-complete').forEach(box=>{
+      box.checked=(currentDoc.completedActions||[]).includes(box.dataset.action);
+      box.addEventListener('change',()=>{const set=new Set(currentDoc.completedActions||[]);box.checked?set.add(box.dataset.action):set.delete(box.dataset.action);currentDoc.completedActions=[...set];persistDocument();});
+    });
+    document.getElementById('document-notes').value=currentDoc.notes||'';
+    chatHistory=currentDoc.chatHistory||[];
+    chatHistory.forEach(message=>appendMsg(message.role==='assistant'?'ai':'user',message.content));
+
     // Suggested questions in chat
     if (currentDoc.analysis?.recommended_questions?.length) {
       const sugg = document.getElementById('chat-suggestions');
       sugg.innerHTML = currentDoc.analysis.recommended_questions.slice(0,3)
-        .map(q=>`<button class="chat-suggestion" onclick="sendChat(${JSON.stringify(q)})">${q}</button>`).join('');
+        .map(q=>`<button class="chat-suggestion" data-question="${safe(q)}">${safe(q)}</button>`).join('');
     }
+    document.querySelectorAll('.chat-suggestion[data-question]').forEach(button=>button.addEventListener('click',()=>sendChat(button.dataset.question)));
 
     document.getElementById('export-btn').style.display = 'flex';
   };
@@ -400,8 +468,30 @@ document.addEventListener('DOMContentLoaded', () => {
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 110) + 'px';
   });
+  document.getElementById('document-notes')?.addEventListener('change',persistDocument);
+  document.getElementById('rename-btn')?.addEventListener('click',async()=>{
+    const title=prompt('Document title',currentDoc?.name||'');
+    if(title?.trim()){currentDoc.name=title.trim();document.getElementById('doc-name').textContent=currentDoc.name;await persistDocument();}
+  });
+  document.getElementById('copy-report-btn')?.addEventListener('click',async()=>{
+    await navigator.clipboard.writeText(document.getElementById('analysis-sections').innerText);window.Norcanto?.announce('Report copied');
+  });
+  document.getElementById('pdf-export-btn')?.addEventListener('click',()=>window.print());
+  document.getElementById('word-export-btn')?.addEventListener('click',exportWord);
+  document.getElementById('share-btn')?.addEventListener('click',async()=>{
+    await navigator.clipboard.writeText(location.href);window.Norcanto?.announce(currentDoc?.storage==='cloud'?'Authenticated link copied':'Local-only link copied; it works in this browser only');
+  });
+  document.getElementById('show-analysis-tab')?.addEventListener('click',()=>{
+    document.getElementById('analysis-view').className='analysis-layout mobile-analysis';
+    document.getElementById('show-analysis-tab').classList.add('active');document.getElementById('show-chat-tab').classList.remove('active');
+  });
+  document.getElementById('show-chat-tab')?.addEventListener('click',()=>{
+    document.getElementById('analysis-view').className='analysis-layout mobile-chat';
+    document.getElementById('show-chat-tab').classList.add('active');document.getElementById('show-analysis-tab').classList.remove('active');
+  });
 });
 </script>
 <style>.hide-xs { } @media(max-width:420px){.hide-xs{display:none}}</style>
+<script src="/js/app-shell.js"></script>
 </body>
 </html>

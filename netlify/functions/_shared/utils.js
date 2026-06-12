@@ -1,5 +1,5 @@
 // netlify/functions/_shared/utils.js
-// Shared utilities - Norcanto AI (Free platform, no subscriptions)
+// Shared utilities - Norcanto AI
 'use strict';
 
 const crypto = require('node:crypto');
@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
   'Content-Type': 'application/json',
 };
 
@@ -41,6 +41,7 @@ const supabase = {
   select: (table, q='')    => supabase._req(`/${table}${q}`),
   insert: (table, data)    => supabase._req(`/${table}`, 'POST', data),
   update: (table, data, q) => supabase._req(`/${table}${q}`, 'PATCH', data),
+  delete: (table, q)       => supabase._req(`/${table}${q}`, 'DELETE'),
 };
 
 // ─── JWT (minimal, no external deps) ──────────────────────────────────────────

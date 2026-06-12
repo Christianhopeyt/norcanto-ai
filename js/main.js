@@ -17,9 +17,11 @@ const initNav = () => {
 
   // Mobile toggle
   if (toggle && mobileNav) {
+    mobileNav.setAttribute('aria-hidden', 'true');
     toggle.addEventListener('click', () => {
       const open = mobileNav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', open);
+      mobileNav.setAttribute('aria-hidden', String(!open));
       if (menuIcon) {
         menuIcon.innerHTML = open
           ? '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
@@ -31,9 +33,25 @@ const initNav = () => {
       if (mobileNav.classList.contains('open') && !nav.contains(e.target) && !mobileNav.contains(e.target)) {
         mobileNav.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
+        mobileNav.setAttribute('aria-hidden', 'true');
       }
     });
   }
+
+  document.querySelectorAll('.nav-item > .nav-link[aria-haspopup="true"]').forEach(button => {
+    const item = button.closest('.nav-item');
+    button.addEventListener('click', () => {
+      const open = item.classList.toggle('open');
+      button.setAttribute('aria-expanded', String(open));
+    });
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        item.classList.remove('open');
+        button.setAttribute('aria-expanded', 'false');
+        button.focus();
+      }
+    });
+  });
 
   // Active link highlighting
   document.querySelectorAll('.nav-link, .nav-mobile-link').forEach(link => {
@@ -48,8 +66,14 @@ const initFAQ = () => {
     if (!btn) return;
     btn.addEventListener('click', () => {
       const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q')?.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      } else btn.setAttribute('aria-expanded', 'false');
     });
   });
 };
@@ -61,11 +85,21 @@ const initUsecaseTabs = () => {
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       const target = tab.dataset.tab;
       document.querySelectorAll('.usecase-panel').forEach(panel => {
         panel.style.display = panel.dataset.panel === target ? 'block' : 'none';
       });
+    });
+    tab.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft','ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      const list = [...tabs];
+      const next = list[(list.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : -1) + list.length) % list.length];
+      next.focus();
+      next.click();
     });
   });
 };
@@ -105,13 +139,24 @@ const initUploadModal = () => {
 
   // Open triggers
   document.querySelectorAll('[data-open-upload]').forEach(btn => {
-    btn.addEventListener('click', () => overlay.classList.add('open'));
+    btn.addEventListener('click', () => {
+      window._landingModalTrigger = document.activeElement;
+      overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
+      setTimeout(()=>dropzone?.focus(),0);
+    });
   });
 
-  const close = () => overlay.classList.remove('open');
+  const close = () => { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); window._landingModalTrigger?.focus?.(); };
   closeBtn?.addEventListener('click', close);
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  overlay.addEventListener('keydown', e => {
+    if(e.key!=='Tab')return;
+    const focusable=[...overlay.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled);
+    if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
 
   if (dropzone && fileInput) {
     dropzone.addEventListener('click', () => fileInput.click());
@@ -129,10 +174,19 @@ const initUploadModal = () => {
   }
 };
 
-const handleLandingUpload = (file) => {
-  // File objects cannot be carried safely across a page navigation. Open the
-  // dashboard upload workflow immediately so the user can select it there.
-  window.location.href = '/pages/app.html?upload=1';
+const handleLandingUpload = async (file) => {
+  try {
+    const request = indexedDB.open('norcanto_uploads', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('pending');
+    request.onsuccess = () => {
+      const tx = request.result.transaction('pending', 'readwrite');
+      tx.objectStore('pending').put(file, 'file');
+      tx.oncomplete = () => { window.location.href = '/pages/app.html?pendingUpload=1'; };
+    };
+    request.onerror = () => { window.location.href = '/pages/app.html?upload=1'; };
+  } catch {
+    window.location.href = '/pages/app.html?upload=1';
+  }
 };
 
 // ── Toast ────────────────────────────────────────────────────────────────────
